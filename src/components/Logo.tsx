@@ -3,95 +3,86 @@ export default function Logo({ size = 40 }: { size?: number }) {
   return (
     <svg width={size} height={h} viewBox="0 0 400 472" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="gOuter" x1="0" y1="0" x2="0.7" y2="1">
+        <linearGradient id="gOuter" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#f8e980"/>
-          <stop offset="25%" stopColor="#D4AF37"/>
-          <stop offset="55%" stopColor="#f0d060"/>
-          <stop offset="85%" stopColor="#B8960C"/>
-          <stop offset="100%" stopColor="#8a6500"/>
+          <stop offset="20%" stopColor="#D4AF37"/>
+          <stop offset="50%" stopColor="#f5e070"/>
+          <stop offset="80%" stopColor="#B8960C"/>
+          <stop offset="100%" stopColor="#6a4800"/>
         </linearGradient>
         <linearGradient id="gLeft" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#4a4a4a"/>
-          <stop offset="100%" stopColor="#606060"/>
+          <stop offset="0%" stopColor="#5a5a5a"/>
+          <stop offset="100%" stopColor="#4a4a4a"/>
         </linearGradient>
         <linearGradient id="gRight" x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="#1a1a1a"/>
-          <stop offset="100%" stopColor="#282828"/>
+          <stop offset="100%" stopColor="#0d0d0d"/>
         </linearGradient>
         <clipPath id="cLeft"><rect x="0" y="0" width="200" height="472"/></clipPath>
         <clipPath id="cRight"><rect x="200" y="0" width="200" height="472"/></clipPath>
       </defs>
 
-      {/* ---- LEFT WING (white/gray feathers) ---- */}
-      <g fill="none">
-        {/* main feather top-left */}
-        <path d="M108 160 Q60 120 30 80 Q55 100 62 88 Q38 68 45 44 Q62 70 66 58 Q48 36 58 18 Q74 50 70 70 Q84 52 90 60 Q78 86 76 108 Q90 112 84 132 Z" fill="#ccc"/>
-        <path d="M108 160 Q60 120 30 80 Q55 100 62 88 Q38 68 45 44 Q62 70 66 58 Q48 36 58 18 Q74 50 70 70 Q84 52 90 60 Q78 86 76 108 Q90 112 84 132 Z" fill="none" stroke="#999" strokeWidth="0.5"/>
-        {/* lower feather */}
-        <path d="M112 190 Q58 158 26 118 Q52 136 58 122 Q34 104 40 78 Q58 102 62 88 Q46 68 54 50 Q72 76 68 96 Q82 78 88 86 Q76 112 74 136 Q88 142 82 162 Z" fill="#bbb"/>
-        <path d="M114 215 Q60 188 28 148 Q54 164 58 150 Q36 132 42 106 Q60 130 64 116 Q48 96 56 78 Q74 104 70 124 Q84 106 90 114 Q78 140 76 164 Q90 172 84 192 Z" fill="#aaa"/>
-        {/* scroll/curl at bottom of wings */}
-        <path d="M100 240 Q60 230 40 210 Q55 218 62 208 Q44 196 50 174 Q65 192 68 180 Q55 164 62 146 Q76 166 74 184 Q86 168 92 176 Q82 202 80 220 Z" fill="#999"/>
-        <path d="M95 260 Q58 255 42 240 Q54 244 60 236 Q46 226 50 208 Q63 222 66 212 Z" fill="#888"/>
+      {/* ===== LEFT WING ===== */}
+      <g opacity="0.85">
+        <path d="M130 200 Q95 170 65 130 Q50 108 40 85 Q52 95 58 82 Q42 65 48 44 Q64 62 68 50 Q50 30 60 12 Q78 38 74 58 Q88 40 94 50 Q82 80 80 105 Q96 95 100 115 Q86 138 88 162 Q104 155 108 178 Q96 198 100 218 Z" fill="#d0d0d0"/>
+        <path d="M128 210 Q92 185 62 148 Q48 126 38 102 Q50 110 56 98 Q40 82 46 60 Q62 76 66 64 Q48 44 56 26 Q76 48 72 68 Q86 50 92 60 Q80 90 78 116 Q94 108 98 128 Q84 152 86 176 Q102 170 106 192 Z" fill="#b8b8b8"/>
+        <path d="M122 230 Q88 218 60 195 Q46 180 40 162 Q52 168 56 158 Q42 144 48 126 Q62 140 66 130 Q52 114 58 98 Q74 114 72 132 Q84 118 90 126 Q80 152 80 172 Q94 168 96 188 Q86 210 90 228 Z" fill="#a0a0a0"/>
+        <path d="M115 248 Q84 244 62 228 Q50 218 48 206 Q58 212 62 204 Q52 194 56 180 Q68 190 70 182 Q60 170 64 158 Q76 170 74 184 Q84 172 90 180 Q82 202 84 218 Q94 216 96 232 Z" fill="#909090"/>
+        <path d="M108 262 Q82 262 65 252 Q56 245 56 236 Q64 240 68 234 Q60 226 62 216 Q72 222 74 215 Z" fill="#808080"/>
       </g>
 
-      {/* ---- RIGHT WING ---- */}
-      <g fill="none">
-        <path d="M292 160 Q340 120 370 80 Q345 100 338 88 Q362 68 355 44 Q338 70 334 58 Q352 36 342 18 Q326 50 330 70 Q316 52 310 60 Q322 86 324 108 Q310 112 316 132 Z" fill="#ddd"/>
-        <path d="M292 160 Q340 120 370 80 Q345 100 338 88 Q362 68 355 44 Q338 70 334 58 Q352 36 342 18 Q326 50 330 70 Q316 52 310 60 Q322 86 324 108 Q310 112 316 132 Z" fill="none" stroke="#aaa" strokeWidth="0.5"/>
-        <path d="M288 190 Q342 158 374 118 Q348 136 342 122 Q366 104 360 78 Q342 102 338 88 Q354 68 346 50 Q328 76 332 96 Q318 78 312 86 Q324 112 326 136 Q312 142 318 162 Z" fill="#ccc"/>
-        <path d="M286 215 Q340 188 372 148 Q346 164 342 150 Q364 132 358 106 Q340 130 336 116 Q352 96 344 78 Q326 104 330 124 Q316 106 310 114 Q322 140 324 164 Q310 172 316 192 Z" fill="#bbb"/>
-        <path d="M300 240 Q340 230 360 210 Q345 218 338 208 Q356 196 350 174 Q335 192 332 180 Q345 164 338 146 Q324 166 326 184 Q314 168 308 176 Q318 202 320 220 Z" fill="#aaa"/>
-        <path d="M305 260 Q342 255 358 240 Q346 244 340 236 Q354 226 350 208 Q337 222 334 212 Z" fill="#999"/>
+      {/* ===== RIGHT WING ===== */}
+      <g opacity="0.85">
+        <path d="M270 200 Q305 170 335 130 Q350 108 360 85 Q348 95 342 82 Q358 65 352 44 Q336 62 332 50 Q350 30 340 12 Q322 38 326 58 Q312 40 306 50 Q318 80 320 105 Q304 95 300 115 Q314 138 312 162 Q296 155 292 178 Q304 198 300 218 Z" fill="#d8d8d8"/>
+        <path d="M272 210 Q308 185 338 148 Q352 126 362 102 Q350 110 344 98 Q360 82 354 60 Q338 76 334 64 Q352 44 344 26 Q324 48 328 68 Q314 50 308 60 Q320 90 322 116 Q306 108 302 128 Q316 152 314 176 Q298 170 294 192 Z" fill="#c0c0c0"/>
+        <path d="M278 230 Q312 218 340 195 Q354 180 360 162 Q348 168 344 158 Q358 144 352 126 Q338 140 334 130 Q348 114 342 98 Q326 114 328 132 Q316 118 310 126 Q320 152 320 172 Q306 168 304 188 Q314 210 310 228 Z" fill="#a8a8a8"/>
+        <path d="M285 248 Q316 244 338 228 Q350 218 352 206 Q342 212 338 204 Q348 194 344 180 Q332 190 330 182 Q340 170 336 158 Q324 170 326 184 Q316 172 310 180 Q318 202 316 218 Q306 216 304 232 Z" fill="#989898"/>
+        <path d="M292 262 Q318 262 335 252 Q344 245 344 236 Q336 240 332 234 Q340 226 338 216 Q328 222 326 215 Z" fill="#888"/>
       </g>
 
-      {/* ---- OUTER SHIELD gold stroke ---- */}
-      <path d="M200 14 L372 72 L372 215 Q372 352 200 430 Q28 352 28 215 L28 72 Z" fill="url(#gLeft)" clipPath="url(#cLeft)"/>
-      <path d="M200 14 L372 72 L372 215 Q372 352 200 430 Q28 352 28 215 L28 72 Z" fill="url(#gRight)" clipPath="url(#cRight)"/>
-      <path d="M200 14 L372 72 L372 215 Q372 352 200 430 Q28 352 28 215 L28 72 Z" fill="none" stroke="url(#gOuter)" strokeWidth="14"/>
-      {/* center gold line */}
-      <line x1="200" y1="14" x2="200" y2="430" stroke="#D4AF37" strokeWidth="2.5" opacity="0.6"/>
+      {/* ===== OUTER SHIELD ===== */}
+      <path d="M200 18 L358 70 L358 248 Q358 380 200 448 Q42 380 42 248 L42 70 Z"
+        fill="url(#gLeft)" clipPath="url(#cLeft)"/>
+      <path d="M200 18 L358 70 L358 248 Q358 380 200 448 Q42 380 42 248 L42 70 Z"
+        fill="url(#gRight)" clipPath="url(#cRight)"/>
+      <path d="M200 18 L358 70 L358 248 Q358 380 200 448 Q42 380 42 248 L42 70 Z"
+        fill="none" stroke="url(#gOuter)" strokeWidth="16"/>
+      <line x1="200" y1="20" x2="200" y2="446" stroke="#D4AF37" strokeWidth="2" opacity="0.5"/>
 
-      {/* ---- INNER WHITE SHIELD ---- */}
-      <path d="M200 85 L298 118 L298 205 Q298 278 200 318 Q102 278 102 205 L102 118 Z" fill="#f0f0f0" stroke="#bbb" strokeWidth="3"/>
-      {/* inner shield detail border */}
-      <path d="M200 95 L290 126 L290 205 Q290 270 200 308 Q110 270 110 205 L110 126 Z" fill="none" stroke="#ccc" strokeWidth="1.5"/>
+      {/* ===== INNER WHITE SHIELD ===== */}
+      <path d="M200 90 L295 122 L295 215 Q295 288 200 328 Q105 288 105 215 L105 122 Z"
+        fill="#f2f2f2" stroke="#c8c8c8" strokeWidth="3"/>
+      <path d="M200 100 L285 130 L285 214 Q285 278 200 316 Q115 278 115 214 L115 130 Z"
+        fill="none" stroke="#ddd" strokeWidth="1.5"/>
 
-      {/* ---- CROWN ---- */}
-      <g transform="translate(200, 96)">
-        <path d="M-35 14 L-22 -10 L-10 8 L0 -18 L10 8 L22 -10 L35 14 L28 24 L-28 24 Z" fill="#D4AF37"/>
-        <rect x="-30" y="22" width="60" height="10" rx="3" fill="#D4AF37"/>
-        <circle cx="-22" cy="-4" r="4" fill="#cc2200"/>
-        <circle cx="0" cy="-12" r="4" fill="#cc2200"/>
-        <circle cx="22" cy="-4" r="4" fill="#cc2200"/>
-        <circle cx="-22" cy="-4" r="2" fill="#ff4444"/>
-        <circle cx="0" cy="-12" r="2" fill="#ff6644"/>
-        <circle cx="22" cy="-4" r="2" fill="#ff4444"/>
+      {/* ===== CROWN ===== */}
+      <g transform="translate(200,100)">
+        <rect x="-34" y="16" width="68" height="12" rx="3" fill="#D4AF37"/>
+        <path d="M-34 16 L-34 -4 L-20 6 L-8 -14 L0 -20 L8 -14 L20 6 L34 -4 L34 16 Z" fill="#D4AF37"/>
+        <ellipse cx="-22" cy="0" rx="4.5" ry="4.5" fill="#cc1100"/>
+        <ellipse cx="0" cy="-8" rx="4.5" ry="4.5" fill="#cc1100"/>
+        <ellipse cx="22" cy="0" rx="4.5" ry="4.5" fill="#cc1100"/>
+        <ellipse cx="-22" cy="0" rx="2" ry="2" fill="#ff3322"/>
+        <ellipse cx="0" cy="-8" rx="2" ry="2" fill="#ff3322"/>
+        <ellipse cx="22" cy="0" rx="2" ry="2" fill="#ff3322"/>
       </g>
 
-      {/* ---- RED KUK EMBLEM (stylized cross/letter design) ---- */}
-      {/* Vertical bar */}
-      <rect x="192" y="148" width="16" height="80" rx="4" fill="#cc0000"/>
-      {/* Horizontal bar */}
-      <rect x="158" y="172" width="84" height="16" rx="4" fill="#cc0000"/>
-      {/* K left top */}
-      <path d="M158 150 L175 150 L200 172 L175 194 L158 194 L182 172 Z" fill="#cc0000"/>
-      {/* K right top */}
-      <path d="M242 150 L225 150 L200 172 L225 194 L242 194 L218 172 Z" fill="#cc0000"/>
-      {/* U bottom arc */}
-      <path d="M165 185 Q165 230 200 235 Q235 230 235 185" fill="none" stroke="#cc0000" strokeWidth="13" strokeLinecap="round"/>
-      {/* Highlight */}
-      <path d="M192 148 L196 148 L196 228 L192 228 Z" fill="#ff4444" opacity="0.4"/>
+      {/* ===== RED KUK EMBLEM ===== */}
+      <rect x="193" y="148" width="14" height="86" rx="3" fill="#cc0000"/>
+      <rect x="155" y="170" width="90" height="14" rx="3" fill="#cc0000"/>
+      <path d="M155 148 L174 148 L200 170 L174 192 L155 192 L178 170 Z" fill="#cc0000"/>
+      <path d="M245 148 L226 148 L200 170 L226 192 L245 192 L222 170 Z" fill="#cc0000"/>
+      <path d="M162 188 Q162 240 200 244 Q238 240 238 188"
+        fill="none" stroke="#cc0000" strokeWidth="14" strokeLinecap="round"/>
+      <rect x="193" y="148" width="5" height="86" rx="2" fill="#ff4444" opacity="0.3"/>
 
-      {/* ---- SCROLL BANNER ---- */}
-      {/* Left scroll curl */}
-      <path d="M80 336 Q72 344 80 352 Q68 348 65 336 Q68 324 80 320 Z" fill="#D4AF37"/>
-      {/* Right scroll curl */}
-      <path d="M320 336 Q328 344 320 352 Q332 348 335 336 Q332 324 320 320 Z" fill="#D4AF37"/>
-      {/* Main banner */}
-      <path d="M80 320 Q200 342 320 320 L320 356 Q200 378 80 356 Z" fill="#D4AF37"/>
-      <path d="M78 336 Q200 360 322 336" fill="none" stroke="#B8960C" strokeWidth="1"/>
-      <text x="200" y="346" textAnchor="middle" fill="#1a1000" fontSize="16" fontFamily="serif" fontWeight="bold" letterSpacing="2.5">KUYKUY GROUP</text>
+      {/* ===== SCROLL BANNER ===== */}
+      <path d="M82 340 Q72 348 80 358 Q65 352 62 340 Q65 328 80 324 Z" fill="#e8e8e8"/>
+      <path d="M318 340 Q328 348 320 358 Q335 352 338 340 Q335 328 320 324 Z" fill="#e8e8e8"/>
+      <path d="M82 324 Q200 342 318 324 L318 360 Q200 378 82 360 Z" fill="#e8e8e8"/>
+      <path d="M82 360 Q200 378 318 360 L318 368 Q200 384 82 368 Z" fill="#c8c8c8"/>
+      <text x="200" y="348" textAnchor="middle" fill="#1a1000"
+        fontSize="15" fontFamily="serif" fontWeight="bold" letterSpacing="2">KUYKUY GROUP</text>
     </svg>
   );
 }
