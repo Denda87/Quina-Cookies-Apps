@@ -1,52 +1,44 @@
 import AdminPageShell from "@/components/AdminPageShell";
+import BookingTable from "./BookingTable";
+import { supabase, type Booking } from "@/lib/supabase";
 
-const bookings = [
-  { id: "BK-001", customer: "Rina Wijaya", layanan: "Pijat Aromaterapi", terapis: "Budi Santoso", waktu: "10:00 - 11:00", cabang: "Jakarta Selatan", status: "Selesai" },
-  { id: "BK-002", customer: "Budi Hartono", layanan: "Pijat Batu Panas", terapis: "Sari Dewi", waktu: "13:00 - 14:30", cabang: "Jakarta Selatan", status: "Berlangsung" },
-  { id: "BK-003", customer: "Dewi Lestari", layanan: "Perawatan Wajah", terapis: "Maya Sari", waktu: "15:00 - 16:00", cabang: "Bandung", status: "Menunggu" },
-  { id: "BK-004", customer: "Ahmad Fauzi", layanan: "Manikur & Pedikur", terapis: "Sari Dewi", waktu: "16:30 - 17:30", cabang: "Jakarta", status: "Menunggu" },
-  { id: "BK-005", customer: "Sinta Rahayu", layanan: "Pijat Aromaterapi", terapis: "Budi Santoso", waktu: "09:00 - 10:00", cabang: "Surabaya", status: "Selesai" },
-];
+export const revalidate = 0;
 
-const statusColor: Record<string, string> = {
-  "Selesai": "#D4AF37",
-  "Berlangsung": "#22c55e",
-  "Menunggu": "#f59e0b",
-};
+export default async function BookingPage() {
+  const { data } = await supabase
+    .from("bookings")
+    .select("*, services(name, price_idr), branches(name)")
+    .order("scheduled_at", { ascending: false })
+    .limit(100);
 
-export default function BookingPage() {
+  const bookings = (data as Booking[]) ?? [];
+  const counts = {
+    total: bookings.length,
+    pending: bookings.filter(b => b.status === "pending").length,
+    confirmed: bookings.filter(b => b.status === "confirmed").length,
+    done: bookings.filter(b => b.status === "done").length,
+    cancelled: bookings.filter(b => b.status === "cancelled").length,
+  };
+
   return (
     <AdminPageShell title="Reservasi / Booking">
-      <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #D4AF3730" }}>
-        <div className="px-5 py-3 flex items-center justify-between" style={{ background: "#D4AF3710", borderBottom: "1px solid #D4AF3720" }}>
-          <h3 className="font-bold text-xs tracking-widest" style={{ color: "#D4AF37" }}>DAFTAR RESERVASI HARI INI</h3>
-          <button className="px-4 py-1.5 rounded-lg text-black text-xs font-bold" style={{ background: "linear-gradient(135deg,#C9A84C,#D4AF37)" }}>+ Buat Reservasi</button>
-        </div>
-        <table className="w-full text-xs">
-          <thead>
-            <tr style={{ borderBottom: "1px solid #D4AF3718", background: "#1a1800" }}>
-              {["ID","Customer","Layanan","Terapis","Waktu","Cabang","Status"].map(h => (
-                <th key={h} className="px-4 py-3 text-left text-gray-500 uppercase" style={{ fontSize: 9 }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((b, i) => (
-              <tr key={b.id} style={{ borderBottom: "1px solid #D4AF3710", background: i % 2 === 0 ? "#141200" : "#111000" }} className="hover:bg-[#D4AF3710]">
-                <td className="px-4 py-4 text-gray-500">{b.id}</td>
-                <td className="px-4 py-4 text-gray-200 font-medium">{b.customer}</td>
-                <td className="px-4 py-4 text-gray-400">{b.layanan}</td>
-                <td className="px-4 py-4 text-gray-400">{b.terapis}</td>
-                <td className="px-4 py-4 text-gray-400">{b.waktu}</td>
-                <td className="px-4 py-4 text-gray-500">{b.cabang}</td>
-                <td className="px-4 py-4">
-                  <span className="px-2 py-0.5 rounded-full text-black font-bold" style={{ fontSize: 9, background: statusColor[b.status] || "#666" }}>{b.status}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Summary */}
+      <div className="grid grid-cols-5 gap-3 mb-2">
+        {[
+          { label: "Total", value: counts.total, color: "#D4AF37" },
+          { label: "Pending", value: counts.pending, color: "#f59e0b" },
+          { label: "Dikonfirmasi", value: counts.confirmed, color: "#3b82f6" },
+          { label: "Selesai", value: counts.done, color: "#22c55e" },
+          { label: "Dibatalkan", value: counts.cancelled, color: "#ef4444" },
+        ].map(({ label, value, color }) => (
+          <div key={label} className="rounded-xl p-4 text-center" style={{ background: "linear-gradient(135deg,#1c1800,#151200)", border: "1px solid #D4AF3730" }}>
+            <p className="font-serif font-bold text-2xl" style={{ color }}>{value}</p>
+            <p className="text-gray-500 text-xs mt-1">{label}</p>
+          </div>
+        ))}
       </div>
+
+      <BookingTable bookings={bookings} />
     </AdminPageShell>
   );
 }
