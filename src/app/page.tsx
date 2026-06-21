@@ -1,105 +1,217 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
-import { MapPin, Phone, Mail, Star, Share2 } from "lucide-react";
+import { MapPin, Phone, Mail, Star, ExternalLink, Share2 } from "lucide-react";
+import { supabase, type Service, type Branch, type Testimonial } from "@/lib/supabase";
 
-const services = [
-  { name: "Pijat Aromaterapi", price: "IDR 120.000", duration: "60/90 menit", emoji: "🌸" },
-  { name: "Pijat Batu Panas", price: "IDR 275.000", duration: "60/90 menit", emoji: "🔥" },
-  { name: "Pijat Premium Wajah", price: "IDR 250.000", duration: "60/90 menit", emoji: "✨" },
-  { name: "Manikur & Pedikur", price: "IDR 255.000", duration: "60/90 menit", emoji: "💅" },
-];
+async function getData() {
+  const [{ data: services }, { data: branches }, { data: testimonials }] = await Promise.all([
+    supabase.from("services").select("*").eq("active", true).order("sort_order"),
+    supabase.from("branches").select("*").eq("active", true).order("sort_order"),
+    supabase.from("testimonials").select("*").eq("active", true).order("sort_order"),
+  ]);
+  return {
+    services: (services as Service[]) ?? [],
+    branches: (branches as Branch[]) ?? [],
+    testimonials: (testimonials as Testimonial[]) ?? [],
+  };
+}
 
-const serviceCircles = ["Pijat Aromaterapi", "Perawatan Wajah Premium", "Pijat Batu Panas", "Manikur & Pedikur"];
+const BRANCH_MAPS: Record<string, string> = {
+  "KUY BM": "https://maps.app.goo.gl/CCp2fQaASvTcHAxN6",
+  "KUY BETOS": "https://maps.app.goo.gl/vWqKNtksLgPRdye16",
+  "CRYSTAL KUY": "https://maps.app.goo.gl/6qdwQh1TUGrAR78b6",
+  "KUY STORY": "https://maps.app.goo.gl/XdBAseGr5XdJ2SUt8",
+  "XI-KUY": "https://maps.app.goo.gl/Zc4gi6dG19EUaR2J8",
+  "Strawberry Spa & Therapy": "https://maps.app.goo.gl/5MpCHHkRdqGFbSpT7",
+};
 
-const testimonials = [
-  { name: "Rina Wijaya", text: "Pengalaman yang luar biasa! Staf sangat profesional dan ramah.", rating: 5 },
-  { name: "Budi Hartono", text: "Suasananya sangat mewah dan tenang. Sangat direkomendasikan!", rating: 5 },
-  { name: "Dewi Lestari", text: "Pijat aromaterapi terbaik yang pernah saya coba!", rating: 5 },
-];
+const SERVICE_ICONS: Record<string, string> = {
+  leaf: "🌸",
+  sparkles: "✨",
+  flame: "🔥",
+  hand: "💅",
+};
 
-const team = [
+const SERVICE_IMAGES: Record<string, string> = {
+  leaf: "https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=400&q=80",
+  sparkles: "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=400&q=80",
+  flame: "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=400&q=80",
+  hand: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80",
+};
+
+const teamMembers = [
   { name: "Maya Putri", role: "Senior Therapist", exp: "5 tahun" },
   { name: "Andi Saputra", role: "Hot Stone Specialist", exp: "4 tahun" },
   { name: "Sinta Rahayu", role: "Facial Expert", exp: "3 tahun" },
 ];
 
-const branches = [
-  { name: "Cabang Pusat - Jakarta Selatan", address: "Jl. Sudirman No. 123, Jakarta Selatan", phone: "(021) 555-0101" },
-  { name: "Cabang Bandung", address: "Jl. Braga No. 45, Bandung", phone: "(022) 555-0202" },
-  { name: "Cabang Surabaya", address: "Jl. Pemuda No. 78, Surabaya", phone: "(031) 555-0303" },
-];
+export default async function LandingPage() {
+  const { services, branches, testimonials } = await getData();
 
-export default function LandingPage() {
   return (
-    <div className="bg-[#0a0a0a] text-white min-h-screen">
-      {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-[#D4AF37]/20">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Logo size={36} />
-            <span className="font-serif text-xl font-bold text-[#D4AF37]">KUYKUY GROUP</span>
+    <div style={{ background: "#08070a", color: "#fff", minHeight: "100vh", fontFamily: "sans-serif" }}>
+
+      {/* ── NAVBAR ── */}
+      <nav style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+        background: "rgba(8,7,10,0.92)", backdropFilter: "blur(12px)",
+        borderBottom: "1px solid #D4AF3728",
+      }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 32px", height: 72, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          {/* Brand */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <Logo size={38} />
+            <div>
+              <div style={{ fontFamily: "Georgia,serif", fontSize: 18, fontWeight: 700, color: "#D4AF37", letterSpacing: "0.1em" }}>KuyKuy Spa</div>
+              <div style={{ fontSize: 9, color: "#D4AF3780", letterSpacing: "0.25em" }}>PREMIUM SPA & WELLNESS</div>
+            </div>
           </div>
-          <div className="hidden md:flex items-center gap-8 text-sm text-gray-300">
-            <a href="#home" className="hover:text-[#D4AF37] transition-colors">Home</a>
-            <a href="#tentang" className="hover:text-[#D4AF37] transition-colors">Tentang Kami</a>
-            <a href="#layanan" className="hover:text-[#D4AF37] transition-colors">Layanan Spa</a>
-            <a href="#menu" className="hover:text-[#D4AF37] transition-colors">Menu Pijat</a>
-            <a href="#lokasi" className="hover:text-[#D4AF37] transition-colors">Lokasi Cabang</a>
-            <a href="#kontak" className="hover:text-[#D4AF37] transition-colors">Kontak</a>
+          {/* Links */}
+          <div style={{ display: "flex", gap: 36, fontSize: 13, color: "#ccc" }}>
+            {[["#home","Home"],["#tentang","Tentang Kami"],["#layanan","Layanan Spa"],["#menu","Menu Pijat"],["#lokasi","Lokasi Cabang"],["#kontak","Kontak"]].map(([href, label]) => (
+              <a key={href} href={href} style={{ textDecoration: "none", color: "inherit", transition: "color 0.2s" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "#D4AF37")}
+                onMouseLeave={e => (e.currentTarget.style.color = "#ccc")}>
+                {label}
+              </a>
+            ))}
           </div>
-          <Link href="/login" className="px-5 py-2 text-sm font-semibold text-black rounded-full gold-gradient hover:opacity-90 transition-opacity">
-            Pesan Sekarang
-          </Link>
+          {/* CTA */}
+          <Link href="/booking" style={{
+            padding: "10px 24px", borderRadius: 40, fontSize: 13, fontWeight: 700,
+            color: "#000", textDecoration: "none", letterSpacing: "0.08em",
+            background: "linear-gradient(135deg,#C9A84C,#f5e070,#B8960C)",
+            boxShadow: "0 4px 20px #D4AF3750",
+          }}>Pesan Sekarang</Link>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#0a0a0a]/80 to-[#0a0a0a]" />
-        <div className="absolute inset-0" style={{backgroundImage: "radial-gradient(circle at 50% 50%, #D4AF3715 0%, transparent 70%)"}}>
-        </div>
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-          <div className="mb-6 flex justify-center">
-            <Logo size={80} />
-          </div>
-          <div className="text-xs tracking-[0.3em] text-[#D4AF37] mb-4 uppercase">Premium Spa & Wellness</div>
-          <h1 className="font-serif text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            TEMUKAN KETENANGAN<br />
-            <span style={{background: "linear-gradient(135deg, #C9A84C, #D4AF37, #B8960C)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text"}}>
-              SEJATI DI KUYKUY SPA
-            </span>
+      {/* ── HERO ── */}
+      <section id="home" style={{ position: "relative", height: "100vh", overflow: "hidden", display: "flex", alignItems: "center" }}>
+        {/* BG Image */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=1920&q=80"
+          alt="Spa hero"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
+        />
+        {/* Overlay */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.6) 55%, rgba(0,0,0,0.25) 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 60% 80% at 20% 60%, #D4AF3712 0%, transparent 60%)" }} />
+
+        {/* Content */}
+        <div style={{ position: "relative", zIndex: 10, maxWidth: 1280, margin: "0 auto", padding: "0 64px", width: "100%", paddingTop: 72 }}>
+          <div style={{ fontSize: 11, letterSpacing: "0.4em", color: "#D4AF37", marginBottom: 20, textTransform: "uppercase" }}>Premium Spa & Wellness</div>
+          <h1 style={{ fontFamily: "Georgia,serif", fontSize: "clamp(48px,7vw,96px)", fontWeight: 700, lineHeight: 1.05, margin: 0 }}>
+            <span style={{ display: "block", color: "#fff" }}>TEMUKAN</span>
+            <span style={{ display: "block", background: "linear-gradient(135deg,#C9A84C,#f5e070,#D4AF37)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>KETENANGAN</span>
+            <span style={{ display: "block", color: "#fff" }}>SEJATI</span>
           </h1>
-          <p className="text-gray-300 text-lg md:text-xl mb-10 font-light">
-            Pelayanan Mewah, Pengalaman Tak Terlupakan
+          <p style={{ color: "#ccc", fontSize: 17, marginTop: 24, marginBottom: 40, fontWeight: 300, maxWidth: 480, lineHeight: 1.6 }}>
+            Pelayanan Mewah · Pengalaman Tak Terlupakan<br />6 Cabang di Jabodetabek
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#menu" className="px-8 py-4 font-semibold text-black rounded-full gold-gradient hover:opacity-90 transition-opacity text-sm uppercase tracking-widest">
-              Lihat Layanan
-            </a>
-            <a href="#kontak" className="px-8 py-4 font-semibold text-[#D4AF37] rounded-full border border-[#D4AF37]/50 hover:bg-[#D4AF37]/10 transition-colors text-sm uppercase tracking-widest">
-              Hubungi Kami
-            </a>
+          <div style={{ display: "flex", gap: 16 }}>
+            <Link href="/booking" style={{
+              padding: "14px 36px", borderRadius: 40, fontSize: 13, fontWeight: 700, color: "#000",
+              textDecoration: "none", letterSpacing: "0.15em", textTransform: "uppercase",
+              background: "linear-gradient(135deg,#C9A84C,#f5e070,#B8960C)",
+              boxShadow: "0 6px 30px #D4AF3760",
+            }}>Reservasi Sekarang</Link>
+            <a href="#menu" style={{
+              padding: "14px 36px", borderRadius: 40, fontSize: 13, fontWeight: 600, color: "#D4AF37",
+              textDecoration: "none", letterSpacing: "0.15em", textTransform: "uppercase",
+              border: "1.5px solid #D4AF3760", background: "rgba(212,175,55,0.06)",
+            }}>Lihat Layanan</a>
+          </div>
+          {/* Stats */}
+          <div style={{ display: "flex", gap: 48, marginTop: 60, paddingTop: 40, borderTop: "1px solid #D4AF3725" }}>
+            {[["6","Cabang Aktif"],["5000+","Pelanggan Puas"],["10+","Tahun Pengalaman"]].map(([n, l]) => (
+              <div key={l}>
+                <div style={{ fontFamily: "Georgia,serif", fontSize: 36, fontWeight: 700, color: "#D4AF37" }}>{n}</div>
+                <div style={{ fontSize: 12, color: "#888", letterSpacing: "0.1em", marginTop: 2 }}>{l}</div>
+              </div>
+            ))}
           </div>
         </div>
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-[#D4AF37]/40 rounded-full flex justify-center pt-2">
-            <div className="w-1 h-3 bg-[#D4AF37]/60 rounded-full" />
+
+        {/* Scroll indicator */}
+        <div style={{ position: "absolute", bottom: 36, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, animation: "bounce 2s infinite" }}>
+          <div style={{ width: 24, height: 40, border: "2px solid #D4AF3750", borderRadius: 12, display: "flex", justifyContent: "center", paddingTop: 6 }}>
+            <div style={{ width: 4, height: 10, background: "#D4AF37", borderRadius: 2 }} />
           </div>
         </div>
       </section>
 
-      {/* Services Circles */}
-      <section id="layanan" className="py-20 bg-[#111]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <div className="text-xs tracking-[0.3em] text-[#D4AF37] mb-3 uppercase">Layanan Kami</div>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold">Layanan Spa Premium</h2>
+      {/* Gold divider */}
+      <div style={{ height: 2, background: "linear-gradient(90deg,transparent,#D4AF37,transparent)" }} />
+
+      {/* ── LAYANAN (circles) ── */}
+      <section id="layanan" style={{ padding: "100px 0", background: "#0f0d00" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 64px" }}>
+          <div style={{ textAlign: "center", marginBottom: 64 }}>
+            <div style={{ fontSize: 10, letterSpacing: "0.4em", color: "#D4AF37", marginBottom: 12, textTransform: "uppercase" }}>Layanan Kami</div>
+            <h2 style={{ fontFamily: "Georgia,serif", fontSize: 38, fontWeight: 700, margin: 0 }}>Layanan Spa Premium</h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {serviceCircles.map((s, i) => (
-              <div key={i} className="flex flex-col items-center gap-4">
-                <div className="w-32 h-32 rounded-full border-2 border-[#D4AF37] flex items-center justify-center text-center p-4 hover:bg-[#D4AF37]/10 transition-colors cursor-pointer">
-                  <span className="text-[#D4AF37] font-serif text-sm leading-tight">{s}</span>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 32, justifyItems: "center" }}>
+            {services.map((s) => (
+              <div key={s.id} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+                <div style={{
+                  width: 160, height: 160, borderRadius: "50%", overflow: "hidden", position: "relative",
+                  border: "2px solid #D4AF3760", boxShadow: "0 0 30px #D4AF3725",
+                  transition: "box-shadow 0.3s, border-color 0.3s",
+                }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 0 50px #D4AF3760"; (e.currentTarget as HTMLDivElement).style.borderColor = "#D4AF37"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 0 30px #D4AF3725"; (e.currentTarget as HTMLDivElement).style.borderColor = "#D4AF3760"; }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={SERVICE_IMAGES[s.icon || ""] || SERVICE_IMAGES.leaf} alt={s.name}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.35)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36 }}>
+                    {SERVICE_ICONS[s.icon || ""] || "✨"}
+                  </div>
+                </div>
+                <div style={{ fontFamily: "Georgia,serif", color: "#D4AF37", fontWeight: 600, textAlign: "center", fontSize: 14 }}>{s.name}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div style={{ height: 2, background: "linear-gradient(90deg,transparent,#D4AF37,transparent)" }} />
+
+      {/* ── MENU PIJAT ── */}
+      <section id="menu" style={{ padding: "100px 0", background: "#08070a" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 64px" }}>
+          <div style={{ textAlign: "center", marginBottom: 64 }}>
+            <div style={{ fontSize: 10, letterSpacing: "0.4em", color: "#D4AF37", marginBottom: 12, textTransform: "uppercase" }}>Pilihan Terbaik</div>
+            <h2 style={{ fontFamily: "Georgia,serif", fontSize: 38, fontWeight: 700, margin: 0 }}>Menu Pijat</h2>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 24 }}>
+            {services.map((s) => (
+              <div key={s.id} style={{
+                background: "#141108", border: "1px solid #D4AF3725", borderRadius: 20,
+                overflow: "hidden", transition: "transform 0.3s, border-color 0.3s, box-shadow 0.3s",
+              }}
+                onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.transform="translateY(-6px)"; el.style.borderColor="#D4AF3770"; el.style.boxShadow="0 16px 40px #D4AF3720"; }}
+                onMouseLeave={e => { const el = e.currentTarget as HTMLDivElement; el.style.transform="none"; el.style.borderColor="#D4AF3725"; el.style.boxShadow="none"; }}
+              >
+                <div style={{ height: 160, overflow: "hidden", position: "relative" }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={SERVICE_IMAGES[s.icon || ""] || SERVICE_IMAGES.leaf} alt={s.name}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 80, background: "linear-gradient(to top, #141108, transparent)" }} />
+                </div>
+                <div style={{ padding: 24 }}>
+                  <h3 style={{ fontFamily: "Georgia,serif", fontSize: 16, fontWeight: 700, color: "#D4AF37", margin: "0 0 6px" }}>{s.name}</h3>
+                  <div style={{ fontSize: 12, color: "#888", marginBottom: 6 }}>{s.duration_minutes} menit</div>
+                  {s.description && <p style={{ fontSize: 12, color: "#666", marginBottom: 16, lineHeight: 1.6, margin: "0 0 16px" }}>{s.description}</p>}
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "#fff", marginBottom: 16 }}>Rp {s.price_idr.toLocaleString("id-ID")}</div>
+                  <Link href="/booking" style={{
+                    display: "block", width: "100%", padding: "10px 0", borderRadius: 40,
+                    textAlign: "center", fontSize: 11, fontWeight: 700, color: "#000",
+                    textDecoration: "none", letterSpacing: "0.15em", textTransform: "uppercase",
+                    background: "linear-gradient(135deg,#C9A84C,#D4AF37)",
+                  }}>Pesan</Link>
                 </div>
               </div>
             ))}
@@ -107,216 +219,214 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Menu Pijat */}
-      <section id="menu" className="py-20 bg-[#0a0a0a]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <div className="text-xs tracking-[0.3em] text-[#D4AF37] mb-3 uppercase">Pilihan Terbaik</div>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold">Menu Pijat</h2>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((s, i) => (
-              <div key={i} className="bg-[#1a1a1a] border border-[#D4AF37]/20 rounded-2xl p-6 hover:border-[#D4AF37]/60 transition-all hover:-translate-y-1 duration-300">
-                <div className="text-4xl mb-4">{s.emoji}</div>
-                <h3 className="font-serif text-lg font-bold text-[#D4AF37] mb-2">{s.name}</h3>
-                <p className="text-gray-400 text-sm mb-3">{s.duration}</p>
-                <div className="text-2xl font-bold text-white">{s.price}</div>
-                <button className="mt-4 w-full py-2 text-xs font-semibold text-black rounded-full gold-gradient hover:opacity-90 transition-opacity uppercase tracking-widest">
-                  Pesan
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <div style={{ height: 2, background: "linear-gradient(90deg,transparent,#D4AF37,transparent)" }} />
 
-      {/* Lokasi Cabang */}
-      <section id="lokasi" className="py-20 bg-[#111]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <div className="text-xs tracking-[0.3em] text-[#D4AF37] mb-3 uppercase">Temukan Kami</div>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold">Lokasi Cabang</h2>
+      {/* ── LOKASI CABANG ── */}
+      <section id="lokasi" style={{ padding: "100px 0", background: "#0f0d00" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 64px" }}>
+          <div style={{ textAlign: "center", marginBottom: 64 }}>
+            <div style={{ fontSize: 10, letterSpacing: "0.4em", color: "#D4AF37", marginBottom: 12, textTransform: "uppercase" }}>Temukan Kami</div>
+            <h2 style={{ fontFamily: "Georgia,serif", fontSize: 38, fontWeight: 700, margin: 0 }}>Lokasi Cabang</h2>
+            <p style={{ color: "#888", marginTop: 12, fontSize: 14 }}>6 Cabang di wilayah Jabodetabek</p>
           </div>
-          <div className="grid lg:grid-cols-2 gap-10">
-            <div className="bg-[#1a1a1a] rounded-2xl overflow-hidden border border-[#D4AF37]/20 aspect-video flex items-center justify-center">
-              <div className="text-center text-gray-500">
-                <MapPin size={48} className="mx-auto mb-3 text-[#D4AF37]/40" />
-                <p className="text-sm">Peta Lokasi</p>
-                <p className="text-xs mt-1">Google Maps Integration</p>
-              </div>
-            </div>
-            <div className="space-y-4">
-              {branches.map((b, i) => (
-                <div key={i} className="bg-[#1a1a1a] border border-[#D4AF37]/20 rounded-xl p-5 hover:border-[#D4AF37]/40 transition-colors">
-                  <h3 className="font-serif font-bold text-[#D4AF37] mb-2">{b.name}</h3>
-                  <div className="flex items-start gap-2 text-gray-400 text-sm mb-1">
-                    <MapPin size={14} className="mt-0.5 shrink-0" />
-                    <span>{b.address}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-400 text-sm">
-                    <Phone size={14} className="shrink-0" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
+            {branches.map((b) => (
+              <div key={b.id} style={{
+                background: "#141108", border: "1px solid #D4AF3725", borderRadius: 16,
+                padding: 24, transition: "border-color 0.2s",
+              }}
+                onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.borderColor = "#D4AF3760"}
+                onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.borderColor = "#D4AF3725"}
+              >
+                <h3 style={{ fontFamily: "Georgia,serif", fontWeight: 700, color: "#D4AF37", marginBottom: 12, margin: "0 0 12px" }}>{b.name}</h3>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 8, color: "#888", fontSize: 13, marginBottom: 12 }}>
+                  <MapPin size={14} style={{ marginTop: 2, flexShrink: 0, color: "#D4AF3780" }} />
+                  <span style={{ lineHeight: 1.6 }}>{b.address}</span>
+                </div>
+                {b.phone && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#888", fontSize: 13, marginBottom: 12 }}>
+                    <Phone size={14} style={{ flexShrink: 0, color: "#D4AF3780" }} />
                     <span>{b.phone}</span>
                   </div>
-                </div>
-              ))}
-            </div>
+                )}
+                <a href={b.map_url || BRANCH_MAPS[b.name] || "#"} target="_blank" rel="noopener noreferrer"
+                  style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 600, color: "#D4AF37", textDecoration: "none" }}>
+                  <ExternalLink size={12} /> Buka Google Maps
+                </a>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Tentang Kami */}
-      <section id="tentang" className="py-20 bg-[#0a0a0a]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <div style={{ height: 2, background: "linear-gradient(90deg,transparent,#D4AF37,transparent)" }} />
+
+      {/* ── TENTANG KAMI ── */}
+      <section id="tentang" style={{ padding: "100px 0", background: "#08070a" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 64px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
             <div>
-              <div className="text-xs tracking-[0.3em] text-[#D4AF37] mb-3 uppercase">Tentang Kuykuy Group</div>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold mb-6">
-                Keahlian & Kepedulian<br />Dalam Setiap Sentuhan
-              </h2>
-              <p className="text-gray-400 leading-relaxed mb-6">
-                Kuykuy Group adalah pelopor layanan spa dan wellness premium di Indonesia. Dengan lebih dari 10 tahun pengalaman, kami berkomitmen memberikan pengalaman relaksasi terbaik untuk setiap pelanggan kami.
+              <div style={{ fontSize: 10, letterSpacing: "0.4em", color: "#D4AF37", marginBottom: 16, textTransform: "uppercase" }}>Tentang Kuykuy Group</div>
+              <h2 style={{ fontFamily: "Georgia,serif", fontSize: 38, fontWeight: 700, margin: "0 0 24px", lineHeight: 1.2 }}>Keahlian & Kepedulian<br />Dalam Setiap Sentuhan</h2>
+              <p style={{ color: "#888", lineHeight: 1.8, marginBottom: 20, fontSize: 15 }}>
+                Kuykuy Group adalah pelopor layanan spa dan wellness premium di Jabodetabek. Dengan 6 cabang aktif di Bekasi, Bogor, dan Cikarang, kami berkomitmen memberikan pengalaman relaksasi terbaik.
               </p>
-              <p className="text-gray-400 leading-relaxed mb-8">
-                Tim terapis profesional kami telah terlatih dengan standar internasional, menggunakan bahan-bahan alami berkualitas tinggi untuk memastikan setiap sesi memberikan manfaat maksimal bagi tubuh dan pikiran Anda.
+              <p style={{ color: "#888", lineHeight: 1.8, marginBottom: 40, fontSize: 15 }}>
+                Tim terapis profesional kami terlatih dengan standar tinggi, menggunakan bahan-bahan alami berkualitas untuk memastikan setiap sesi memberikan manfaat maksimal.
               </p>
-              <div className="grid grid-cols-3 gap-6">
-                {[["10+", "Tahun Pengalaman"], ["5000+", "Pelanggan Puas"], ["3", "Cabang Aktif"]].map(([n, l]) => (
-                  <div key={l} className="text-center">
-                    <div className="text-3xl font-bold text-[#D4AF37] font-serif">{n}</div>
-                    <div className="text-gray-400 text-xs mt-1">{l}</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24, paddingTop: 32, borderTop: "1px solid #D4AF3720" }}>
+                {[["6","Cabang Aktif"],["5000+","Pelanggan"],["10+","Tahun"]].map(([n, l]) => (
+                  <div key={l} style={{ textAlign: "center" }}>
+                    <div style={{ fontFamily: "Georgia,serif", fontSize: 32, fontWeight: 700, color: "#D4AF37" }}>{n}</div>
+                    <div style={{ color: "#888", fontSize: 12, marginTop: 4 }}>{l}</div>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="flex justify-center">
-              <div className="relative">
-                <div className="w-64 h-64 rounded-full border-4 border-[#D4AF37]/40 flex items-center justify-center bg-[#1a1a1a]">
-                  <Logo size={120} />
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <div style={{ position: "relative" }}>
+                <div style={{
+                  width: 380, height: 480, borderRadius: 24, overflow: "hidden",
+                  border: "2px solid #D4AF3750", boxShadow: "0 0 60px #D4AF3720",
+                }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80" alt="Spa" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
-                <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full gold-gradient flex items-center justify-center text-black font-bold text-xs text-center leading-tight p-2">
-                  Premium Quality
-                </div>
+                <div style={{
+                  position: "absolute", bottom: -16, right: -16, padding: "12px 20px",
+                  background: "linear-gradient(135deg,#C9A84C,#D4AF37)", borderRadius: 12,
+                  fontSize: 12, fontWeight: 700, color: "#000",
+                }}>Premium Quality ★</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials & Team */}
-      <section className="py-20 bg-[#111]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <div className="text-xs tracking-[0.3em] text-[#D4AF37] mb-3 uppercase">Testimonial</div>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold">Kata Pelanggan Kami</h2>
+      <div style={{ height: 2, background: "linear-gradient(90deg,transparent,#D4AF37,transparent)" }} />
+
+      {/* ── TESTIMONIAL ── */}
+      <section style={{ padding: "100px 0", background: "#0f0d00" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 64px" }}>
+          <div style={{ textAlign: "center", marginBottom: 64 }}>
+            <div style={{ fontSize: 10, letterSpacing: "0.4em", color: "#D4AF37", marginBottom: 12, textTransform: "uppercase" }}>Testimoni</div>
+            <h2 style={{ fontFamily: "Georgia,serif", fontSize: 38, fontWeight: 700, margin: 0 }}>Kata Pelanggan Kami</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-6 mb-20">
-            {testimonials.map((t, i) => (
-              <div key={i} className="bg-[#1a1a1a] border border-[#D4AF37]/20 rounded-2xl p-6">
-                <div className="flex mb-3">
-                  {Array.from({length: t.rating}).map((_, j) => (
-                    <Star key={j} size={16} fill="#D4AF37" className="text-[#D4AF37]" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24, marginBottom: 80 }}>
+            {testimonials.map((t) => (
+              <div key={t.id} style={{ background: "#141108", border: "1px solid #D4AF3725", borderRadius: 20, padding: 32 }}>
+                <div style={{ display: "flex", marginBottom: 16 }}>
+                  {Array.from({ length: t.rating }).map((_, j) => (
+                    <Star key={j} size={16} fill="#D4AF37" style={{ color: "#D4AF37" }} />
                   ))}
                 </div>
-                <p className="text-gray-300 italic mb-4 leading-relaxed">&quot;{t.text}&quot;</p>
-                <div className="font-semibold text-[#D4AF37]">— {t.name}</div>
+                <p style={{ color: "#ccc", fontStyle: "italic", marginBottom: 20, lineHeight: 1.7, fontSize: 14 }}>&quot;{t.quote}&quot;</p>
+                <div style={{ fontWeight: 600, color: "#D4AF37", fontSize: 14 }}>— {t.name}</div>
+                {t.role && <div style={{ color: "#666", fontSize: 12, marginTop: 4 }}>{t.role}</div>}
               </div>
             ))}
           </div>
 
-          <div className="text-center mb-12">
-            <div className="text-xs tracking-[0.3em] text-[#D4AF37] mb-3 uppercase">Tim Kami</div>
-            <h2 className="font-serif text-3xl font-bold">Terapis Berpengalaman</h2>
+          {/* Team */}
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <div style={{ fontSize: 10, letterSpacing: "0.4em", color: "#D4AF37", marginBottom: 12, textTransform: "uppercase" }}>Tim Kami</div>
+            <h2 style={{ fontFamily: "Georgia,serif", fontSize: 38, fontWeight: 700, margin: 0 }}>Terapis Berpengalaman</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {team.map((m, i) => (
-              <div key={i} className="text-center bg-[#1a1a1a] border border-[#D4AF37]/20 rounded-2xl p-8">
-                <div className="w-20 h-20 rounded-full gold-gradient flex items-center justify-center mx-auto mb-4 text-2xl font-bold text-black">
-                  {m.name.charAt(0)}
-                </div>
-                <h3 className="font-serif font-bold text-lg mb-1">{m.name}</h3>
-                <div className="text-[#D4AF37] text-sm mb-1">{m.role}</div>
-                <div className="text-gray-400 text-xs">Pengalaman {m.exp}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
+            {teamMembers.map((m, i) => (
+              <div key={i} style={{ textAlign: "center", background: "#141108", border: "1px solid #D4AF3725", borderRadius: 20, padding: 40 }}>
+                <div style={{
+                  width: 80, height: 80, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+                  margin: "0 auto 16px", fontSize: 28, fontWeight: 700, color: "#000",
+                  background: "linear-gradient(135deg,#C9A84C,#D4AF37)",
+                }}>{m.name.charAt(0)}</div>
+                <h3 style={{ fontFamily: "Georgia,serif", fontWeight: 700, fontSize: 18, marginBottom: 6, margin: "0 0 6px" }}>{m.name}</h3>
+                <div style={{ color: "#D4AF37", fontSize: 13, marginBottom: 6 }}>{m.role}</div>
+                <div style={{ color: "#666", fontSize: 12 }}>Pengalaman {m.exp}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Kemitraan */}
-      <section className="py-20 bg-[#0a0a0a]">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="text-xs tracking-[0.3em] text-[#D4AF37] mb-3 uppercase">Bergabung Bersama Kami</div>
-          <h2 className="font-serif text-3xl md:text-4xl font-bold mb-6">Kemitraan & Solusi Staff</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Bergabunglah dengan jaringan Kuykuy Group dan dapatkan manfaat eksklusif sebagai mitra atau terapis profesional. Kami menyediakan pelatihan, dukungan, dan sistem manajemen terdepan.
+      <div style={{ height: 2, background: "linear-gradient(90deg,transparent,#D4AF37,transparent)" }} />
+
+      {/* ── KEMITRAAN ── */}
+      <section style={{ padding: "100px 0", background: "#08070a" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 64px", textAlign: "center" }}>
+          <div style={{ fontSize: 10, letterSpacing: "0.4em", color: "#D4AF37", marginBottom: 12, textTransform: "uppercase" }}>Bergabung Bersama Kami</div>
+          <h2 style={{ fontFamily: "Georgia,serif", fontSize: 38, fontWeight: 700, margin: "0 0 16px" }}>Kemitraan & Solusi Staff</h2>
+          <p style={{ color: "#888", maxWidth: 560, margin: "0 auto 48px", lineHeight: 1.8, fontSize: 15 }}>
+            Bergabunglah dengan jaringan Kuykuy Group dan dapatkan manfaat eksklusif sebagai mitra atau terapis profesional.
           </p>
-          <div className="grid md:grid-cols-3 gap-6 mb-10">
-            {[["Sistem Digital", "Kelola absensi dan kinerja secara digital"], ["Pelatihan Pro", "Pelatihan terapis berstandar internasional"], ["Reward Program", "Bonus dan insentif menarik untuk performa terbaik"]].map(([title, desc]) => (
-              <div key={title} className="bg-[#1a1a1a] border border-[#D4AF37]/20 rounded-xl p-6">
-                <div className="w-12 h-12 gold-gradient rounded-xl flex items-center justify-center mx-auto mb-4 text-black font-bold">★</div>
-                <h3 className="font-serif font-bold text-[#D4AF37] mb-2">{title}</h3>
-                <p className="text-gray-400 text-sm">{desc}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24, marginBottom: 48 }}>
+            {[["Sistem Digital","Kelola absensi dan kinerja secara digital real-time"],["Pelatihan Pro","Pelatihan terapis berstandar internasional"],["Reward Program","Bonus dan insentif menarik untuk performa terbaik"]].map(([title, desc]) => (
+              <div key={title} style={{ background: "#141108", border: "1px solid #D4AF3725", borderRadius: 16, padding: 32 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 20, color: "#000", fontWeight: 700, background: "linear-gradient(135deg,#C9A84C,#D4AF37)" }}>★</div>
+                <h3 style={{ fontFamily: "Georgia,serif", fontWeight: 700, color: "#D4AF37", marginBottom: 8, margin: "0 0 8px" }}>{title}</h3>
+                <p style={{ color: "#888", fontSize: 13, lineHeight: 1.7, margin: 0 }}>{desc}</p>
               </div>
             ))}
           </div>
-          <Link href="/login" className="inline-block px-8 py-4 font-semibold text-black rounded-full gold-gradient hover:opacity-90 transition-opacity text-sm uppercase tracking-widest">
-            Akses Portal Staff
-          </Link>
+          <Link href="/login" style={{
+            display: "inline-block", padding: "14px 40px", borderRadius: 40, fontSize: 13,
+            fontWeight: 700, color: "#000", textDecoration: "none", letterSpacing: "0.15em", textTransform: "uppercase",
+            background: "linear-gradient(135deg,#C9A84C,#D4AF37,#B8960C)",
+            boxShadow: "0 6px 30px #D4AF3750",
+          }}>Akses Portal Staff</Link>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer id="kontak" className="bg-[#111] border-t border-[#D4AF37]/20 py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-10 mb-12">
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-3 mb-4">
-                <Logo size={40} />
+      <div style={{ height: 2, background: "linear-gradient(90deg,transparent,#D4AF37,transparent)" }} />
+
+      {/* ── FOOTER ── */}
+      <footer id="kontak" style={{ background: "#060504", borderTop: "1px solid #D4AF3718", padding: "80px 0 32px" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 64px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr", gap: 64, marginBottom: 48 }}>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                <Logo size={42} />
                 <div>
-                  <div className="font-serif text-xl font-bold text-[#D4AF37]">KUYKUY GROUP</div>
-                  <div className="text-gray-400 text-xs">Premium Spa & Wellness</div>
+                  <div style={{ fontFamily: "Georgia,serif", fontSize: 20, fontWeight: 700, color: "#D4AF37" }}>KUYKUY GROUP</div>
+                  <div style={{ fontSize: 10, color: "#D4AF3780", letterSpacing: "0.2em" }}>Premium Spa & Wellness</div>
                 </div>
               </div>
-              <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                Layanan spa dan pijat premium untuk ketenangan tubuh dan jiwa. Temukan pengalaman relaksasi terbaik bersama kami.
+              <p style={{ color: "#666", fontSize: 13, lineHeight: 1.8, maxWidth: 320, marginBottom: 20 }}>
+                Layanan spa dan pijat premium untuk ketenangan tubuh dan jiwa. 6 cabang di Bekasi, Bogor, dan Cikarang.
               </p>
-              <div className="flex gap-3">
-                {[Share2, Share2, Share2].map((Icon, i) => (
-                  <a key={i} href="#" className="w-8 h-8 border border-[#D4AF37]/30 rounded-full flex items-center justify-center hover:bg-[#D4AF37]/10 transition-colors">
-                    <Icon size={14} className="text-[#D4AF37]" />
-                  </a>
+              <div style={{ display: "flex", gap: 10 }}>
+                {[Share2, Share2, Mail].map((Icon, i) => (
+                  <a key={i} href="#" style={{
+                    width: 36, height: 36, border: "1px solid #D4AF3730", borderRadius: "50%",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    color: "#D4AF37", textDecoration: "none",
+                  }}><Icon size={14} /></a>
                 ))}
               </div>
             </div>
             <div>
-              <h4 className="font-serif font-bold text-[#D4AF37] mb-4">Layanan</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Pijat Aromaterapi</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Pijat Batu Panas</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Perawatan Wajah</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Manikur & Pedikur</a></li>
+              <h4 style={{ fontFamily: "Georgia,serif", fontWeight: 700, color: "#D4AF37", marginBottom: 20, margin: "0 0 20px" }}>Layanan</h4>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+                {services.map(s => (
+                  <li key={s.id}><a href="#menu" style={{ color: "#666", textDecoration: "none", fontSize: 13 }}>{s.name}</a></li>
+                ))}
               </ul>
             </div>
             <div>
-              <h4 className="font-serif font-bold text-[#D4AF37] mb-4">Kontak</h4>
-              <div className="space-y-3">
-                <div className="flex items-start gap-2 text-gray-400 text-sm">
-                  <Phone size={14} className="mt-0.5 text-[#D4AF37] shrink-0" />
-                  <span>+62 21 555-0100</span>
-                </div>
-                <div className="flex items-start gap-2 text-gray-400 text-sm">
-                  <Mail size={14} className="mt-0.5 text-[#D4AF37] shrink-0" />
-                  <span>hello@kuykuygroup.com</span>
-                </div>
-                <div className="flex items-start gap-2 text-gray-400 text-sm">
-                  <MapPin size={14} className="mt-0.5 text-[#D4AF37] shrink-0" />
-                  <span>Jakarta, Bandung, Surabaya</span>
-                </div>
+              <h4 style={{ fontFamily: "Georgia,serif", fontWeight: 700, color: "#D4AF37", marginBottom: 20, margin: "0 0 20px" }}>Kontak</h4>
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                {[[Phone,"+62 21 555-0100"],[Mail,"hello@kuykuygroup.com"],[MapPin,"Bekasi · Bogor · Cikarang"]].map(([Icon, text], i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, color: "#666", fontSize: 13 }}>
+                    {/* @ts-expect-error icon component */}
+                    <Icon size={14} style={{ marginTop: 2, flexShrink: 0, color: "#D4AF3780" }} />
+                    <span>{text as string}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-          <div className="border-t border-[#D4AF37]/10 pt-6 text-center text-gray-500 text-sm">
-            © 2024 Kuykuy Group. All rights reserved. | Premium Spa & Wellness Indonesia
+          <div style={{ borderTop: "1px solid #D4AF3710", paddingTop: 24, textAlign: "center", color: "#444", fontSize: 12 }}>
+            © 2025 Kuykuy Group. All rights reserved. | Premium Spa & Wellness Indonesia
           </div>
         </div>
       </footer>
