@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { getUser } from "@/lib/auth";
-import { getAttendance, type AttendanceRecord } from "@/lib/store";
+import { supabase, type Attendance } from "@/lib/supabase";
 import { weeklyCustomers } from "@/lib/mockData";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -37,30 +37,37 @@ function StatCard({ label, value }: { label: string; value: string }) {
 
 export default function AdminDashboard() {
   const user = getUser();
-  const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
+  const [attendance, setAttendance] = useState<Attendance[]>([]);
   const [lastRefresh, setLastRefresh] = useState("");
 
-  const refresh = () => {
-    setAttendance(getAttendance());
+  const fetchAttendance = async () => {
+    const today = new Date().toISOString().split("T")[0];
+    const { data } = await supabase
+      .from("attendance")
+      .select("*")
+      .eq("date", today)
+      .order("checked_in", { ascending: false });
+    if (data) setAttendance(data as Attendance[]);
     setLastRefresh(new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }));
   };
 
   useEffect(() => {
-    refresh();
-    const interval = setInterval(refresh, 5000);
-    const onStorage = () => refresh();
-    window.addEventListener("storage", onStorage);
-    return () => { clearInterval(interval); window.removeEventListener("storage", onStorage); };
+    fetchAttendance();
+    // Realtime subscription — update immediately when any staff checks in
+    const channel = supabase
+      .channel("attendance-admin")
+      .on("postgres_changes", { event: "*", schema: "public", table: "attendance" }, () => fetchAttendance())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
-  const hadir = attendance.filter(r => r.checkedIn).length;
+  const hadir = attendance.filter(r => r.checked_in).length;
   const totalStaf = attendance.length;
-  const totalCustomers = attendance.reduce((s, r) => s + r.customersToday, 0);
+  const totalCustomers = attendance.reduce((s, r) => s + r.customers_today, 0);
 
-  // Show top 6 staff for status table (most recently checked in first)
   const displayStaff = [...attendance]
-    .sort((a, b) => (b.checkedIn ? 1 : 0) - (a.checkedIn ? 1 : 0))
-    .slice(0, 6);
+    .sort((a, b) => (b.checked_in ? 1 : 0) - (a.checked_in ? 1 : 0))
+    .slice(0, 8);
 
   return (
     <div className="flex flex-col min-h-screen" style={{ background: "#080800" }}>
@@ -82,7 +89,7 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-1.5 text-xs" style={{ color: "#D4AF37" }}>
             <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#4ade80" }} />
             <span className="text-gray-600">Live · {lastRefresh}</span>
-            <button onClick={refresh} className="ml-1"><RefreshCw size={12} color="#555" /></button>
+            <button onClick={fetchAttendance} className="ml-1"><RefreshCw size={12} color="#555" /></button>
           </div>
           <Mail size={18} color="#555" className="cursor-pointer" />
           <div className="relative cursor-pointer">
@@ -105,7 +112,7 @@ export default function AdminDashboard() {
           <StatCard label="Staf Hadir Hari Ini" value={`${hadir}/${totalStaf}`} />
           <StatCard label="Total Customer Hari Ini" value={`${totalCustomers} orang`} />
           <StatCard label="Pendapatan Bulan Ini" value="Rp 435.000.000" />
-          <StatCard label="Pencapaian Target Rata-rata" value={`${totalStaf ? Math.round(attendance.filter(r => r.targetDaily > 0).reduce((s, r) => s + (r.customersToday / r.targetDaily), 0) / Math.max(1, attendance.filter(r => r.targetDaily > 0).length) * 100) : 0}%`} />
+          <StatCard label="Pencapaian Target Rata-rata" value={`${totalStaf ? Math.round(attendance.filter(r => r.target_daily > 0).reduce((s, r) => s + (r.customers_today / r.target_daily), 0) / Math.max(1, attendance.filter(r => r.target_daily > 0).length) * 100) : 0}%`} />
         </div>
 
         {/* CHARTS */}
@@ -178,8 +185,8 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {displayStaff.map((s, i) => (
-                  <tr key={s.staffId} style={{ borderBottom: "1px solid #D4AF3710" }} className="hover:bg-[#D4AF3708]">
+                {displayStaff.map((s) => (
+                  <tr key={s.id} style={{ borderBottom: "1px solid #D4AF3710" }} className="hover:bg-[#D4AF3708]">
                     <td className="px-3 py-3">
                       <div className="flex items-center gap-1.5">
                         <div className="w-6 h-6 rounded-full flex items-center justify-center text-black font-bold text-[10px]" style={{ background: "linear-gradient(135deg,#C9A84C,#D4AF37)" }}>{s.name[0]}</div>
@@ -188,19 +195,19 @@ export default function AdminDashboard() {
                     </td>
                     <td className="px-2 py-3 text-gray-600" style={{ fontSize: 9 }}>{s.branch.replace("Strawberry Spa & Therapy", "Strawberry")}</td>
                     <td className="px-2 py-3">
-                      {s.checkedIn
+                      {s.checked_in
                         ? <span className="flex items-center gap-0.5 text-green-400"><CheckCircle size={10} /> Hadir</span>
                         : <span className="flex items-center gap-0.5 text-red-400"><XCircle size={10} /> Absen</span>}
                     </td>
-                    <td className="px-2 py-3 text-gray-500" style={{ fontSize: 10 }}>{s.checkInTime || "—"}</td>
-                    <td className="px-2 py-3 font-bold" style={{ color: "#D4AF37", fontSize: 11 }}>{s.customersToday}</td>
+                    <td className="px-2 py-3 text-gray-500" style={{ fontSize: 10 }}>{s.check_in_time || "—"}</td>
+                    <td className="px-2 py-3 font-bold" style={{ color: "#D4AF37", fontSize: 11 }}>{s.customers_today}</td>
                     <td className="px-2 py-3">
-                      {s.targetDaily > 0 ? (
+                      {s.target_daily > 0 ? (
                         <div className="flex items-center gap-1">
                           <div className="w-10 rounded-full h-1" style={{ background: "#222" }}>
-                            <div className="h-1 rounded-full" style={{ width: `${Math.min(100, (s.customersToday / s.targetDaily) * 100)}%`, background: "#D4AF37" }} />
+                            <div className="h-1 rounded-full" style={{ width: `${Math.min(100, (s.customers_today / s.target_daily) * 100)}%`, background: "#D4AF37" }} />
                           </div>
-                          <span className="text-gray-600" style={{ fontSize: 9 }}>{s.customersToday}/{s.targetDaily}</span>
+                          <span className="text-gray-600" style={{ fontSize: 9 }}>{s.customers_today}/{s.target_daily}</span>
                         </div>
                       ) : <span className="text-gray-700">—</span>}
                     </td>
@@ -226,10 +233,10 @@ export default function AdminDashboard() {
               <tbody>
                 {["KUY BM", "KUY BETOS", "CRYSTAL KUY", "KUY STORY", "XI-KUY", "Strawberry Spa & Therapy"].map((branch, i) => {
                   const branchData = attendance.filter(r => r.branch === branch);
-                  const hadirCount = branchData.filter(r => r.checkedIn).length;
-                  const custCount = branchData.reduce((s, r) => s + r.customersToday, 0);
-                  const therapists = branchData.filter(r => r.targetDaily > 0);
-                  const pct = therapists.length ? Math.round(therapists.reduce((s, r) => s + (r.customersToday / r.targetDaily), 0) / therapists.length * 100) : 0;
+                  const hadirCount = branchData.filter(r => r.checked_in).length;
+                  const custCount = branchData.reduce((s, r) => s + r.customers_today, 0);
+                  const therapists = branchData.filter(r => r.target_daily > 0);
+                  const pct = therapists.length ? Math.round(therapists.reduce((s, r) => s + (r.customers_today / r.target_daily), 0) / therapists.length * 100) : 0;
                   return (
                     <tr key={branch} style={{ borderBottom: "1px solid #D4AF3710", background: i % 2 === 0 ? "#141200" : "#111000" }} className="hover:bg-[#D4AF3708]">
                       <td className="px-4 py-3 text-gray-200" style={{ fontSize: 11 }}>{branch.replace("Strawberry Spa & Therapy", "Strawberry Spa")}</td>

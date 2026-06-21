@@ -41,6 +41,22 @@ export type Testimonial = {
   active: boolean;
 };
 
+export type Attendance = {
+  id: string;
+  staff_id: string;
+  name: string;
+  role: string;
+  branch: string;
+  date: string;
+  checked_in: boolean;
+  check_in_time: string | null;
+  check_out_time: string | null;
+  customers_today: number;
+  target_daily: number;
+  created_at: string;
+  updated_at: string;
+};
+
 export type Booking = {
   id: string;
   customer_name: string;
