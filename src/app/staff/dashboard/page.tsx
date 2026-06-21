@@ -59,7 +59,7 @@ export default function StaffDashboard() {
   return (
     <div style={{ background: "#08070a", minHeight: "100vh", paddingBottom: 100 }}>
 
-      {/* HERO HEADER */}
+      {/* ── HERO HEADER ── */}
       <div style={{
         background: "linear-gradient(160deg, #1e1600 0%, #140f00 40%, #0c0a00 100%)",
         borderBottom: "1px solid #D4AF3730",
@@ -67,9 +67,11 @@ export default function StaffDashboard() {
         position: "relative",
         overflow: "hidden",
       }}>
+        {/* Gold shimmer bg */}
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 80% 60% at 50% -10%, #D4AF3718 0%, transparent 70%)", pointerEvents: "none" }} />
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg,transparent,#D4AF37,transparent)" }} />
 
+        {/* Top bar */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px 0" }}>
           <div>
             <div style={{ fontSize: 9, letterSpacing: "0.35em", color: "#D4AF3780", textTransform: "uppercase" }}>Kuykuy Group</div>
@@ -83,10 +85,12 @@ export default function StaffDashboard() {
           </div>
         </div>
 
+        {/* Profile section */}
         <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "24px 20px 0" }}>
+          {/* Avatar */}
           <div style={{ position: "relative", flexShrink: 0 }}>
             <div style={{
-              width: 80, height: 80, borderRadius: "50%",
+              width: 80, height: 80, borderRadius: "50%", overflow: "hidden",
               border: "3px solid #D4AF37", boxShadow: "0 0 24px #D4AF3760",
               background: "linear-gradient(135deg,#C9A84C,#f5e070,#D4AF37,#B8960C)",
               display: "flex", alignItems: "center", justifyContent: "center",
@@ -94,6 +98,7 @@ export default function StaffDashboard() {
             }}>
               {name.charAt(0)}
             </div>
+            {/* Online dot */}
             <div style={{
               position: "absolute", bottom: 4, right: 4, width: 14, height: 14,
               borderRadius: "50%", background: checkedIn ? "#22c55e" : "#ef4444",
@@ -101,11 +106,14 @@ export default function StaffDashboard() {
             }} />
           </div>
 
+          {/* Info */}
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 10, color: "#D4AF3790", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 4 }}>Welcome back,</div>
             <div style={{ fontSize: 22, fontWeight: 700, color: "#fff", fontFamily: "Georgia,serif", lineHeight: 1.2 }}>{name}</div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
-              <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 20, background: "#D4AF3720", color: "#D4AF37", border: "1px solid #D4AF3740", fontWeight: 600 }}>Senior Therapist</span>
+              <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 20, background: "#D4AF3720", color: "#D4AF37", border: "1px solid #D4AF3740", fontWeight: 600 }}>
+                Senior Therapist
+              </span>
               <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
                 <Star size={11} fill="#D4AF37" color="#D4AF37" />
                 <span style={{ fontSize: 11, color: "#D4AF37", fontWeight: 600 }}>4.8</span>
@@ -117,6 +125,7 @@ export default function StaffDashboard() {
             </div>
           </div>
 
+          {/* Bell */}
           <div style={{ position: "relative", flexShrink: 0 }}>
             <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#D4AF3715", border: "1px solid #D4AF3730", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Bell size={18} color="#D4AF37" />
@@ -125,6 +134,7 @@ export default function StaffDashboard() {
           </div>
         </div>
 
+        {/* Check-in banner */}
         <div style={{ margin: "20px 20px 0", padding: "14px 16px", borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "space-between", background: checkedIn ? "linear-gradient(135deg,#052010,#071a0a)" : "linear-gradient(135deg,#200505,#1a0707)", border: `1px solid ${checkedIn ? "#22c55e40" : "#ef444440"}` }}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <div style={{ width: 40, height: 40, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: checkedIn ? "#22c55e20" : "#ef444420" }}>
@@ -143,6 +153,7 @@ export default function StaffDashboard() {
 
       <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: 16 }}>
 
+        {/* ── 4 STAT CARDS ── */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 12 }}>
           {statCards.map(({ icon: Icon, label, value, color }) => (
             <div key={label} style={{ background: "linear-gradient(135deg,#141108,#0f0d00)", border: "1px solid #D4AF3725", borderRadius: 16, padding: "16px 14px", display: "flex", alignItems: "center", gap: 12 }}>
@@ -157,6 +168,7 @@ export default function StaffDashboard() {
           ))}
         </div>
 
+        {/* ── PROGRESS TARGET ── */}
         <div style={{ background: "linear-gradient(135deg,#1a1800,#141000)", border: "1px solid #D4AF3740", borderRadius: 20, padding: 20 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <div>
@@ -176,8 +188,9 @@ export default function StaffDashboard() {
               <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "#D4AF37" }}>{pct}%</div>
             </div>
           </div>
+          {/* progress bar */}
           <div style={{ height: 8, background: "#D4AF3715", borderRadius: 8, overflow: "hidden" }}>
-            <div style={{ height: "100%", width: `${pct}%`, background: "linear-gradient(90deg,#C9A84C,#f5e070,#D4AF37)", borderRadius: 8 }} />
+            <div style={{ height: "100%", width: `${pct}%`, background: "linear-gradient(90deg,#C9A84C,#f5e070,#D4AF37)", borderRadius: 8, transition: "width 0.5s" }} />
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: 10 }}>
             <span style={{ fontSize: 11, color: "#888" }}>{target - customers} customer lagi untuk capai target</span>
@@ -185,6 +198,7 @@ export default function StaffDashboard() {
           </div>
         </div>
 
+        {/* ── QUICK ACTIONS ── */}
         <div>
           <div style={{ fontSize: 10, color: "#D4AF3780", letterSpacing: "0.3em", textTransform: "uppercase", marginBottom: 12 }}>Menu Cepat</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10 }}>
@@ -204,6 +218,7 @@ export default function StaffDashboard() {
           </div>
         </div>
 
+        {/* ── NOTIFIKASI ── */}
         <div style={{ background: "linear-gradient(135deg,#141108,#0f0d00)", border: "1px solid #D4AF3725", borderRadius: 20, padding: 16 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
             <div style={{ fontSize: 10, color: "#D4AF3780", letterSpacing: "0.3em", textTransform: "uppercase" }}>Notifikasi</div>
@@ -224,6 +239,7 @@ export default function StaffDashboard() {
           </div>
         </div>
 
+        {/* ── JADWAL HARI INI ── */}
         <div style={{ background: "linear-gradient(135deg,#141108,#0f0d00)", border: "1px solid #D4AF3725", borderRadius: 20, padding: 20 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <div>
@@ -260,7 +276,7 @@ export default function StaffDashboard() {
                   : (
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
                       <span style={{ fontSize: 9, padding: "2px 8px", borderRadius: 10, background: "#D4AF3720", color: "#D4AF37", fontWeight: 600, whiteSpace: "nowrap" }}>Akan Datang</span>
-                      <a href="tel:08123456789" style={{ display: "flex", alignItems: "center", gap: 3, textDecoration: "none" }}>
+                      <a href={`tel:08123456789`} style={{ display: "flex", alignItems: "center", gap: 3, textDecoration: "none" }}>
                         <Phone size={10} color="#3b82f6" />
                         <span style={{ fontSize: 9, color: "#3b82f6" }}>Hubungi</span>
                       </a>
@@ -271,6 +287,7 @@ export default function StaffDashboard() {
           </div>
         </div>
 
+        {/* ── KOMISI SUMMARY ── */}
         <div style={{ background: "linear-gradient(135deg,#052010,#071a0a)", border: "1px solid #22c55e30", borderRadius: 20, padding: 20 }}>
           <div style={{ fontSize: 10, color: "#4ade8090", letterSpacing: "0.3em", textTransform: "uppercase", marginBottom: 12 }}>Estimasi Komisi Hari Ini</div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
