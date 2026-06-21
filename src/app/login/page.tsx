@@ -32,7 +32,7 @@ export default function LoginPage() {
       className="min-h-screen flex flex-col max-w-[430px] mx-auto"
       style={{ background: "linear-gradient(170deg, #110e00 0%, #0a0a0a 35%, #100c00 100%)" }}
     >
-      {/* ===== HEADER WITH LOGO ===== */}
+      {/* HEADER */}
       <div
         className="flex flex-col items-center justify-center pt-14 pb-8 px-6 relative overflow-hidden"
         style={{
@@ -40,17 +40,13 @@ export default function LoginPage() {
           borderBottom: "1.5px solid #D4AF3740",
         }}
       >
-        {/* background glow */}
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: "radial-gradient(ellipse 60% 50% at 50% 30%, #D4AF3722 0%, transparent 70%)" }}/>
-        {/* decorative top arc */}
         <div className="absolute top-0 left-0 right-0 h-0.5"
           style={{ background: "linear-gradient(90deg, transparent, #D4AF3780, transparent)" }}/>
-
         <div className="relative z-10" style={{ filter: "drop-shadow(0 0 24px #D4AF3760)" }}>
           <Logo size={100} />
         </div>
-
         <div className="relative z-10 mt-5 flex flex-col items-center gap-1">
           <h1
             className="font-serif text-2xl font-bold tracking-[0.18em]"
@@ -68,11 +64,9 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* ===== FORM ===== */}
+      {/* FORM */}
       <div className="flex-1 px-6 pt-8 pb-4 flex flex-col gap-5">
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
-
-          {/* Email field */}
           <div className="flex flex-col gap-1.5">
             <label className="text-gray-600 text-xs tracking-widest uppercase pl-1">Email / No. Handphone</label>
             <div
@@ -95,8 +89,6 @@ export default function LoginPage() {
               />
             </div>
           </div>
-
-          {/* Password field */}
           <div className="flex flex-col gap-1.5">
             <label className="text-gray-600 text-xs tracking-widest uppercase pl-1">Password</label>
             <div
@@ -122,32 +114,23 @@ export default function LoginPage() {
               </button>
             </div>
           </div>
-
           {error && (
             <div className="rounded-xl px-4 py-3 text-center" style={{ background: "#cc000020", border: "1px solid #cc000040" }}>
               <p className="text-red-400 text-xs">{error}</p>
             </div>
           )}
-
-          {/* LOGIN BUTTON */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 font-bold text-black rounded-2xl text-sm uppercase tracking-[0.3em] relative overflow-hidden disabled:opacity-60"
+            className="w-full py-4 font-bold text-black rounded-2xl text-sm uppercase tracking-[0.3em] disabled:opacity-60"
             style={{
               background: "linear-gradient(135deg, #C9A84C 0%, #f5e070 35%, #D4AF37 65%, #B8960C 100%)",
               boxShadow: "0 6px 28px #D4AF3760, 0 2px 8px #00000060",
             }}
           >
-            <span className="relative z-10">{loading ? "Memuat..." : "LOGIN"}</span>
-            {!loading && (
-              <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity"
-                style={{ background: "linear-gradient(135deg, #f5e070, #D4AF37, #C9A84C)" }}/>
-            )}
+            {loading ? "Memuat..." : "LOGIN"}
           </button>
         </form>
-
-        {/* Demo credentials */}
         <div className="rounded-xl px-4 py-3 text-center" style={{ background: "#ffffff08", border: "1px solid #ffffff10" }}>
           <p className="text-gray-700 text-xs mb-1 tracking-wider">Demo Akun:</p>
           <p className="text-gray-600 text-[11px]">Staff: staff@kuykuy.com / kuykuy123</p>
@@ -155,7 +138,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* ===== BOTTOM NAV (decorative) ===== */}
+      {/* BOTTOM NAV decorative */}
       <div
         className="flex justify-around items-center py-4 px-4"
         style={{ borderTop: "1.5px solid #D4AF3728", background: "linear-gradient(180deg, #0a0a0a, #050500)" }}
