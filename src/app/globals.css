@@ -1,34 +1,29 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --gold: #C9A84C;
-  --gold-light: #D4AF37;
-  --gold-dark: #8B6914;
-  --bg: #0a0a0a;
-  --bg2: #111111;
-  --bg3: #1a1a1a;
+  --gold: #D4AF37;
+  --gold-dark: #B8960C;
+  --gold-light: #C9A84C;
 }
 
 body {
-  background-color: #0a0a0a;
-  color: white;
-  font-family: system-ui, -apple-system, sans-serif;
+  background: #0a0a0a;
+  color: #fff;
 }
 
-.gold-btn {
-  background: linear-gradient(135deg, #E8C96A, #C9A84C, #8B6914);
-  color: #000;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.2s;
+.gold-gradient {
+  background: linear-gradient(135deg, #C9A84C, #D4AF37, #B8960C);
 }
-.gold-btn:hover { opacity: 0.9; }
 
 .gold-text {
-  background: linear-gradient(135deg, #E8C96A, #C9A84C);
+  background: linear-gradient(135deg, #C9A84C, #D4AF37, #B8960C);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.gold-border {
+  border-color: #D4AF37;
 }

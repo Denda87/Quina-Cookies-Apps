@@ -1,22 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
-import Logo from "@/components/Logo";
-import { useRouter } from "next/navigation";
-import { ChevronLeft, Phone, Users, TrendingUp, LogOut } from "lucide-react";
 import { getUser, logout } from "@/lib/auth";
-import { staffList } from "@/lib/mockData";
+import { useRouter } from "next/navigation";
+import { Phone, TrendingUp, Calendar, LogOut } from "lucide-react";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const [staff, setStaff] = useState(staffList[0]);
-
-  useEffect(() => {
-    const user = getUser();
-    if (user?.staffId) {
-      const found = staffList.find(s => s.id === user.staffId);
-      if (found) setStaff(found);
-    }
-  }, []);
+  const user = getUser();
 
   const handleLogout = () => {
     logout();
@@ -25,55 +14,46 @@ export default function ProfilePage() {
 
   return (
     <div className="px-4 py-6">
-      <div className="flex items-center mb-6">
-        <button onClick={() => router.back()} className="text-[#C9A84C] mr-4"><ChevronLeft size={24} /></button>
-        <div className="flex-1 flex flex-col items-center">
-          <Logo size={48} />
-          <p className="text-[#C9A84C] text-xs font-bold tracking-[0.3em] mt-1">PROFILE</p>
-        </div>
-        <div className="w-8" />
+      <div className="text-center mb-8">
+        <h1 className="font-serif text-xl font-bold tracking-widest text-[#D4AF37]">PROFILE</h1>
       </div>
 
-      {/* Avatar + Name */}
-      <div className="flex items-center gap-4 bg-[#111] rounded-xl p-5 mb-4 border border-[#C9A84C22]">
-        <div className="w-20 h-20 rounded-full border-2 border-[#C9A84C] bg-[#C9A84C22] flex items-center justify-center text-3xl font-bold text-[#C9A84C]">
-          {staff.name[0]}
+      {/* Avatar & Info */}
+      <div className="bg-[#111] border border-[#D4AF37]/20 rounded-2xl p-6 mb-4 text-center">
+        <div className="w-20 h-20 rounded-full gold-gradient flex items-center justify-center text-black font-bold text-3xl mx-auto mb-3">
+          {user?.name?.charAt(0) || "B"}
         </div>
-        <div>
-          <p className="text-white font-bold text-xl">{staff.name}</p>
-          <p className="text-[#C9A84C] text-sm">{staff.role}</p>
-        </div>
+        <h2 className="font-serif text-xl font-bold mb-1">{user?.name || "Budi Santoso"}</h2>
+        <p className="text-[#D4AF37] text-sm">Therapist</p>
+        <p className="text-gray-500 text-xs mt-1">{user?.email}</p>
       </div>
 
-      {/* Info */}
-      <div className="bg-[#111] rounded-xl p-5 mb-4 border border-[#C9A84C22] space-y-4">
-        <div className="flex items-center gap-3">
-          <Phone size={18} color="#C9A84C" />
-          <div>
-            <p className="text-gray-500 text-xs">Nomor HP</p>
-            <p className="text-white text-sm">{staff.phone}</p>
+      {/* Info Cards */}
+      <div className="space-y-3 mb-6">
+        {[
+          { icon: Phone, label: "Nomor HP", value: "+62 812-3456-7890" },
+          { icon: TrendingUp, label: "Total Hari Ini", value: "3 Customer" },
+          { icon: Calendar, label: "Performa Bulanan", value: "30 / 100 Customer (30%)" },
+        ].map(({ icon: Icon, label, value }) => (
+          <div key={label} className="bg-[#111] border border-[#D4AF37]/20 rounded-xl p-4 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-[#D4AF37]/10 flex items-center justify-center">
+              <Icon size={18} className="text-[#D4AF37]" />
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs">{label}</p>
+              <p className="font-medium text-sm">{value}</p>
+            </div>
           </div>
-        </div>
-        <div className="h-px bg-[#C9A84C11]" />
-        <div className="flex items-center gap-3">
-          <Users size={18} color="#C9A84C" />
-          <div>
-            <p className="text-gray-500 text-xs">Total Hari Ini</p>
-            <p className="text-white text-sm">{staff.customersToday} Customer</p>
-          </div>
-        </div>
-        <div className="h-px bg-[#C9A84C11]" />
-        <div className="flex items-center gap-3">
-          <TrendingUp size={18} color="#C9A84C" />
-          <div>
-            <p className="text-gray-500 text-xs">Performa Bulanan</p>
-            <p className="text-white text-sm">{staff.monthlyCustomers} Customer</p>
-          </div>
-        </div>
+        ))}
       </div>
 
-      <button onClick={handleLogout} className="gold-btn w-full py-4 rounded-xl text-black font-bold tracking-widest flex items-center justify-center gap-2">
-        <LogOut size={18} /> LOGOUT
+      {/* Logout */}
+      <button
+        onClick={handleLogout}
+        className="w-full py-3 font-bold text-black rounded-xl gold-gradient hover:opacity-90 transition-opacity text-sm uppercase tracking-widest flex items-center justify-center gap-2"
+      >
+        <LogOut size={16} />
+        LOGOUT
       </button>
     </div>
   );

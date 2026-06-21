@@ -1,17 +1,19 @@
-export default function CircularProgress({ value, max, size = 60 }: { value: number; max: number; size?: number }) {
-  const r = (size - 8) / 2;
+export default function CircularProgress({ value, max, label }: { value: number; max: number; label?: string }) {
+  const r = 36;
   const circ = 2 * Math.PI * r;
   const pct = Math.min(1, value / max);
-  const dash = pct * circ;
+  const dash = circ * pct;
   return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size}>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#333" strokeWidth="5" />
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#C9A84C" strokeWidth="5"
-          strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
-          transform={`rotate(-90 ${size / 2} ${size / 2})`} />
+    <div className="relative inline-flex items-center justify-center">
+      <svg width="90" height="90" className="-rotate-90">
+        <circle cx="45" cy="45" r={r} fill="none" stroke="#222" strokeWidth="8" />
+        <circle cx="45" cy="45" r={r} fill="none" stroke="#D4AF37" strokeWidth="8"
+          strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" />
       </svg>
-      <span className="absolute inset-0 flex items-center justify-center text-[#C9A84C] font-bold text-sm">{value}</span>
+      <div className="absolute text-center">
+        <div className="text-2xl font-bold text-[#D4AF37]">{value}</div>
+        {label && <div className="text-xs text-gray-400">{label}</div>}
+      </div>
     </div>
   );
 }

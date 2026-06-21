@@ -1,25 +1,26 @@
-export const USERS = [
-  { email: "staff@kuykuy.com", password: "kuykuy123", role: "staff", staffId: 1 },
-  { email: "admin@kuykuy.com", password: "admin123", role: "admin", staffId: null },
-];
+export const CREDENTIALS = {
+  staff: { email: "staff@kuykuy.com", password: "kuykuy123", role: "staff", name: "Budi Santoso" },
+  admin: { email: "admin@kuykuy.com", password: "admin123", role: "admin", name: "Admin Kuykuy" },
+};
 
-export function login(email: string, password: string): { role: string; staffId: number | null } | null {
-  const user = USERS.find(u => u.email === email && u.password === password);
-  if (!user) return null;
-  if (typeof window !== "undefined") {
-    localStorage.setItem("kuykuy_user", JSON.stringify({ role: user.role, staffId: user.staffId, email: user.email }));
+export function login(email: string, password: string): { role: string; name: string } | null {
+  if (typeof window === "undefined") return null;
+  for (const cred of Object.values(CREDENTIALS)) {
+    if (cred.email === email && cred.password === password) {
+      localStorage.setItem("kuykuy_user", JSON.stringify({ role: cred.role, name: cred.name, email }));
+      return { role: cred.role, name: cred.name };
+    }
   }
-  return { role: user.role, staffId: user.staffId };
+  return null;
 }
 
-export function getUser(): { role: string; staffId: number | null; email: string } | null {
+export function getUser(): { role: string; name: string; email: string } | null {
   if (typeof window === "undefined") return null;
-  const data = localStorage.getItem("kuykuy_user");
-  return data ? JSON.parse(data) : null;
+  const stored = localStorage.getItem("kuykuy_user");
+  if (!stored) return null;
+  try { return JSON.parse(stored); } catch { return null; }
 }
 
 export function logout() {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("kuykuy_user");
-  }
+  if (typeof window !== "undefined") localStorage.removeItem("kuykuy_user");
 }
