@@ -8,7 +8,7 @@ export type UserSession = { role: string; name: string; email: string; staffId: 
 export function login(email: string, password: string): { role: string; name: string } | null {
   if (typeof window === "undefined") return null;
   for (const cred of Object.values(CREDENTIALS)) {
-    if (cred.email === email && cred.password === password) {
+    if (cred.email === email.trim() && cred.password === password.trim()) {
       const session: UserSession = { role: cred.role, name: cred.name, email, staffId: cred.staffId, branch: cred.branch };
       localStorage.setItem("kuykuy_user", JSON.stringify(session));
       return { role: cred.role, name: cred.name };
