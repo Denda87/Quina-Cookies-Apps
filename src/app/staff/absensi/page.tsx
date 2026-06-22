@@ -14,9 +14,11 @@ function nowTime() {
 
 export default function AbsensiPage() {
   const user = getUser();
-  const staffId = user?.staffId || "ss-2";
+  const staffId = user?.staffId || "ss-1";
   const staffName = user?.name || "Budi Santoso";
   const staffBranch = user?.branch || "Strawberry Spa & Therapy";
+  const staffJobRole = user?.jobRole || "Therapist";
+  const isTherapist = staffJobRole === "Therapist";
 
   const [record, setRecord] = useState<Attendance | null>(null);
   const [customers, setCustomers] = useState(0);
@@ -59,12 +61,12 @@ export default function AbsensiPage() {
       const { error } = await supabase.from("attendance").insert({
         staff_id: staffId,
         name: staffName,
-        role: "Therapist",
+        role: staffJobRole,
         branch: staffBranch,
         date: today(),
         checked_in: false,
         customers_today: 0,
-        target_daily: 5,
+        target_daily: isTherapist ? 5 : 0,
         ...updates,
       });
       if (!error) fetchRecord();
@@ -150,8 +152,14 @@ export default function AbsensiPage() {
           </button>
         )}
 
-        {/* Input Customer */}
-        <div className="rounded-2xl p-4" style={{ background: "linear-gradient(135deg,#1a1800,#141000)", border: "1px solid #D4AF3740" }}>
+        {/* Job Role Badge */}
+        <div className="rounded-xl px-4 py-2.5 flex items-center gap-2" style={{ background: "#1a1400", border: "1px solid #D4AF3730" }}>
+          <div className="w-2 h-2 rounded-full" style={{ background: "#D4AF37" }} />
+          <span className="text-xs" style={{ color: "#D4AF37" }}>Jabatan: <span className="font-semibold">{staffJobRole}</span></span>
+        </div>
+
+        {/* Input Customer — hanya untuk Therapist */}
+        {isTherapist && <div className="rounded-2xl p-4" style={{ background: "linear-gradient(135deg,#1a1800,#141000)", border: "1px solid #D4AF3740" }}>
           <p className="text-gray-400 text-xs tracking-widest uppercase mb-4">Input Data Hari Ini</p>
 
           <div className="flex items-center justify-between mb-5">
@@ -192,7 +200,7 @@ export default function AbsensiPage() {
             {saved ? "✓ TERSIMPAN & TERKIRIM KE ADMIN!" : "SIMPAN & KIRIM KE ADMIN"}
           </button>
           {!record?.checked_in && <p className="text-gray-700 text-xs text-center mt-2">Check-in terlebih dahulu sebelum input data</p>}
-        </div>
+        </div>}
 
         {/* Total */}
         <div className="rounded-2xl p-4 flex items-center justify-between" style={{ background: "linear-gradient(135deg,#1a1800,#141000)", border: "1px solid #D4AF3740" }}>
@@ -200,7 +208,7 @@ export default function AbsensiPage() {
             <Clock size={18} color="#D4AF37" />
             <div>
               <p className="text-white font-semibold text-sm">Total Hari Ini</p>
-              <p className="text-gray-600 text-xs">Komisi: Rp {((record?.customers_today ?? 0) * 15000).toLocaleString("id-ID")}</p>
+              {isTherapist && <p className="text-gray-600 text-xs">Komisi: Rp {((record?.customers_today ?? 0) * 15000).toLocaleString("id-ID")}</p>}
             </div>
           </div>
           <p className="font-serif font-bold text-2xl" style={{ color: "#D4AF37" }}>{record?.customers_today ?? 0} <span className="text-sm text-gray-600">customer</span></p>

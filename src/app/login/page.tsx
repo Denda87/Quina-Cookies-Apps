@@ -131,10 +131,24 @@ export default function LoginPage() {
             {loading ? "Memuat..." : "LOGIN"}
           </button>
         </form>
-        <div className="rounded-xl px-4 py-3 text-center" style={{ background: "#ffffff08", border: "1px solid #ffffff10" }}>
-          <p className="text-gray-700 text-xs mb-1 tracking-wider">Demo Akun:</p>
-          <p className="text-gray-600 text-[11px]">Staff: staff@kuykuy.com / kuykuy123</p>
-          <p className="text-gray-600 text-[11px]">Admin: admin@kuykuy.com / admin123</p>
+        <div className="rounded-xl px-4 py-3" style={{ background: "#ffffff08", border: "1px solid #ffffff10" }}>
+          <p className="text-gray-700 text-xs mb-2 tracking-wider text-center">Akun Login:</p>
+          <div className="flex flex-col gap-1">
+            {[
+              ["Admin",     "admin@kuykuy.com",    "admin123"],
+              ["Therapist", "staff@kuykuy.com",    "kuykuy123"],
+              ["Kasir",     "kasir@kuykuy.com",    "kuykuy123"],
+              ["Sub Kasir", "subkasir@kuykuy.com", "kuykuy123"],
+              ["GRO",       "gro@kuykuy.com",      "kuykuy123"],
+              ["Office Boy","ob@kuykuy.com",        "kuykuy123"],
+            ].map(([role, email, pass]) => (
+              <div key={role} className="flex justify-between items-center py-0.5">
+                <span style={{ color: "#D4AF3780", fontSize: 10, minWidth: 70 }}>{role}</span>
+                <span className="text-gray-600 text-[10px] flex-1 text-center">{email}</span>
+                <span className="text-gray-700 text-[10px]">/ {pass}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
