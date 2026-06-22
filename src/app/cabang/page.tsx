@@ -14,6 +14,10 @@ const BRANCH_MAPS: Record<string, string> = {
   "KUY STORY": "https://maps.app.goo.gl/XdBAseGr5XdJ2SUt8",
   "XI-KUY": "https://maps.app.goo.gl/Zc4gi6dG19EUaR2J8",
   "Strawberry Spa & Therapy": "https://maps.app.goo.gl/5MpCHHkRdqGFbSpT7",
+  "V PHOENIX": "https://maps.app.goo.gl/4z7PPgg5myAM4TCE7",
+  "SIERRA": "https://maps.app.goo.gl/m6dRvP9BxcfGB1pT7",
+  "VIERZHEN": "https://maps.app.goo.gl/Dw31k7BnjPSJ8Xuw8",
+  "INFINITY": "https://maps.app.goo.gl/fYaPmGRKddJkLjbg8",
 };
 
 function toWaLink(phone: string) {
@@ -68,7 +72,7 @@ export default async function CabangPage() {
             LOKASI CABANG
           </h1>
           <p style={{ fontSize: 17, color: "#8a7a50", lineHeight: 1.7 }}>
-            6 Cabang Premium di Jabodetabek
+            11 Cabang Premium di Jabodetabek
           </p>
         </div>
       </section>
@@ -90,7 +94,7 @@ export default async function CabangPage() {
           }}
         >
           {[
-            { value: "6 Cabang", label: "Tersebar Strategis" },
+            { value: "11 Cabang", label: "Tersebar Strategis" },
             { value: "Bekasi · Bogor · Cikarang", label: "Area Pelayanan" },
             { value: "Buka 7 Hari", label: "09:00 – 22:00 WIB" },
           ].map((s, i) => (
