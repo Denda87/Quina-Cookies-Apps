@@ -6,18 +6,30 @@ import { logout } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import {
   LayoutDashboard, UserCog, Layers, CalendarClock,
-  Target, MapPin, FileText, Settings, LogOut, Search
+  Target, MapPin, FileText, Settings, LogOut, Search,
+  ShoppingCart, DoorOpen, AlarmClock, Wallet
 } from "lucide-react";
 
-const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { label: "Terapis/Staf", icon: UserCog, href: "/dashboard/staff" },
-  { label: "Layanan Spa", icon: Layers, href: "/dashboard/layanan" },
-  { label: "Reservasi/Booking", icon: CalendarClock, href: "/dashboard/booking" },
-  { label: "Absensi & Kinerja", icon: Target, href: "/dashboard/absensi" },
-  { label: "Lokasi Cabang", icon: MapPin, href: "/dashboard/lokasi" },
-  { label: "Laporan", icon: FileText, href: "/dashboard/laporan" },
-  { label: "Pengaturan", icon: Settings, href: "/dashboard/pengaturan" },
+type NavItem =
+  | { type: "link"; label: string; icon: React.ElementType; href: string }
+  | { type: "divider"; label: string };
+
+const navItems: NavItem[] = [
+  { type: "link", label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+
+  { type: "divider", label: "— OPERASIONAL —" },
+  { type: "link", label: "Kasir POS", icon: ShoppingCart, href: "/dashboard/kasir" },
+  { type: "link", label: "Monitor Kamar", icon: DoorOpen, href: "/dashboard/kamar" },
+  { type: "link", label: "Shift Kasir", icon: AlarmClock, href: "/dashboard/shift" },
+
+  { type: "link", label: "Terapis/Staf", icon: UserCog, href: "/dashboard/staff" },
+  { type: "link", label: "Layanan Spa", icon: Layers, href: "/dashboard/layanan" },
+  { type: "link", label: "Reservasi/Booking", icon: CalendarClock, href: "/dashboard/booking" },
+  { type: "link", label: "Absensi & Kinerja", icon: Target, href: "/dashboard/absensi" },
+  { type: "link", label: "Komisi Terapis", icon: Wallet, href: "/dashboard/komisi" },
+  { type: "link", label: "Lokasi Cabang", icon: MapPin, href: "/dashboard/lokasi" },
+  { type: "link", label: "Laporan", icon: FileText, href: "/dashboard/laporan" },
+  { type: "link", label: "Pengaturan", icon: Settings, href: "/dashboard/pengaturan" },
 ];
 
 export default function AdminSidebar() {
@@ -48,8 +60,20 @@ export default function AdminSidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-2">
-        {navItems.map(({ label, icon: Icon, href }) => {
+      <nav className="flex-1 px-2 overflow-y-auto">
+        {navItems.map((item, idx) => {
+          if (item.type === "divider") {
+            return (
+              <p
+                key={`divider-${idx}`}
+                className="text-[9px] tracking-widest uppercase px-3 py-2 mt-2"
+                style={{ color: "#333" }}
+              >
+                {item.label}
+              </p>
+            );
+          }
+          const { label, icon: Icon, href } = item;
           const active = path === href;
           return (
             <Link
