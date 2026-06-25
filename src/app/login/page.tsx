@@ -3,13 +3,19 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Logo from "@/components/Logo";
 import { login } from "@/lib/auth";
-import { Eye, EyeOff, Mail, Lock, LayoutGrid, ClipboardList, BarChart2, User } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+
+const GOLD = "#caa23d";
+const GOLD_GRAD = "linear-gradient(150deg,#7c5418 0%,#c8902b 16%,#f7e08c 50%,#c8902b 84%,#7c5418 100%)";
+const FIELD_BG = "linear-gradient(160deg,#161616,#101010)";
+const FIELD_BORDER = "1px solid rgba(202,162,61,.22)";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
+  const [showAccounts, setShowAccounts] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -29,147 +35,188 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col max-w-[430px] mx-auto"
-      style={{ background: "linear-gradient(170deg, #110e00 0%, #0a0a0a 35%, #100c00 100%)" }}
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "40px 20px",
+        background: "radial-gradient(120% 90% at 50% -10%, #1a1712 0%, #0c0c0d 46%, #060606 100%)",
+        fontFamily: "'Manrope', sans-serif",
+      }}
     >
-      {/* HEADER */}
       <div
-        className="flex flex-col items-center justify-center pt-14 pb-8 px-6 relative overflow-hidden"
         style={{
-          background: "linear-gradient(180deg, #1e1600 0%, #141000 60%, #0a0a0a 100%)",
-          borderBottom: "1.5px solid #D4AF3740",
+          position: "relative",
+          width: "100%",
+          maxWidth: 392,
+          display: "flex",
+          flexDirection: "column",
+          padding: "10px 28px 0",
         }}
       >
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 60% 50% at 50% 30%, #D4AF3722 0%, transparent 70%)" }}/>
-        <div className="absolute top-0 left-0 right-0 h-0.5"
-          style={{ background: "linear-gradient(90deg, transparent, #D4AF3780, transparent)" }}/>
-        <div className="relative z-10" style={{ filter: "drop-shadow(0 0 24px #D4AF3760)" }}>
-          <Logo size={100} />
-        </div>
-        <div className="relative z-10 mt-5 flex flex-col items-center gap-1">
-          <h1
-            className="font-serif text-2xl font-bold tracking-[0.18em]"
-            style={{
-              background: "linear-gradient(135deg, #C9A84C, #f5e070, #D4AF37, #B8960C)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            Welcome Back
-          </h1>
-          <div className="w-20 h-px" style={{ background: "linear-gradient(90deg, transparent, #D4AF37, transparent)" }}/>
-          <p className="text-gray-600 text-xs tracking-widest mt-1">KUYKUY GROUP</p>
-        </div>
-      </div>
+        {/* Gold glow */}
+        <div
+          style={{
+            position: "absolute",
+            top: -120,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: 340,
+            height: 300,
+            background: "radial-gradient(closest-side, rgba(201,150,43,.3), transparent 70%)",
+            pointerEvents: "none",
+          }}
+        />
 
-      {/* FORM */}
-      <div className="flex-1 px-6 pt-8 pb-4 flex flex-col gap-5">
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-gray-600 text-xs tracking-widest uppercase pl-1">Email</label>
-            <div
-              className="flex items-center gap-3 rounded-2xl px-4 py-4"
-              style={{
-                background: "linear-gradient(135deg, #141000, #0f0d00)",
-                border: "1px solid #D4AF3750",
-                boxShadow: "inset 0 1px 3px #00000060",
-              }}
-            >
-              <Mail size={17} color="#D4AF3780" />
-              <input
-                type="text"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder:text-gray-700"
-                placeholder="Email"
-                required
-                autoComplete="username"
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-gray-600 text-xs tracking-widest uppercase pl-1">Password</label>
-            <div
-              className="flex items-center gap-3 rounded-2xl px-4 py-4"
-              style={{
-                background: "linear-gradient(135deg, #141000, #0f0d00)",
-                border: "1px solid #D4AF3750",
-                boxShadow: "inset 0 1px 3px #00000060",
-              }}
-            >
-              <Lock size={17} color="#D4AF3780" />
-              <input
-                type={showPass ? "text" : "password"}
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                className="flex-1 bg-transparent text-white text-sm focus:outline-none placeholder:text-gray-700"
-                placeholder="Password"
-                required
-                autoComplete="current-password"
-              />
-              <button type="button" onClick={() => setShowPass(!showPass)} className="p-1">
-                {showPass ? <EyeOff size={16} color="#555" /> : <Eye size={16} color="#555" />}
-              </button>
-            </div>
-          </div>
+        {/* Logo */}
+        <div style={{ position: "relative", alignSelf: "center", filter: "drop-shadow(0 10px 24px rgba(0,0,0,.6))" }}>
+          <Logo size={110} />
+        </div>
+
+        {/* Title */}
+        <h1
+          style={{
+            position: "relative",
+            margin: "18px 0 0",
+            textAlign: "center",
+            fontFamily: "'Cinzel', serif",
+            fontWeight: 600,
+            fontSize: 30,
+            letterSpacing: ".5px",
+            color: "#f3ead4",
+          }}
+        >
+          Welcome Back
+        </h1>
+        <p style={{ position: "relative", margin: "7px 0 0", textAlign: "center", fontSize: 13.5, color: "#8a8475" }}>
+          Kuykuy Group · Staff Portal
+        </p>
+
+        {/* Form */}
+        <form onSubmit={handleLogin} style={{ position: "relative", marginTop: 34, display: "flex", flexDirection: "column", gap: 14 }}>
+          {/* Email */}
+          <label style={{ display: "flex", alignItems: "center", gap: 12, height: 56, padding: "0 16px", borderRadius: 13, background: FIELD_BG, border: FIELD_BORDER }}>
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.7">
+              <rect x="2.5" y="5" width="19" height="14" rx="2.5" />
+              <path d="M3 8l9 5 9-5" />
+            </svg>
+            <input
+              type="text"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="Email"
+              required
+              autoComplete="username"
+              style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: "#ece5d4", font: "500 15px 'Manrope'" }}
+            />
+          </label>
+
+          {/* Password */}
+          <label style={{ display: "flex", alignItems: "center", gap: 12, height: 56, padding: "0 16px", borderRadius: 13, background: FIELD_BG, border: FIELD_BORDER }}>
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke={GOLD} strokeWidth="1.7">
+              <rect x="4.5" y="10.5" width="15" height="10" rx="2.2" />
+              <path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" />
+            </svg>
+            <input
+              type={showPass ? "text" : "password"}
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="Password"
+              required
+              autoComplete="current-password"
+              style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: "#ece5d4", font: "500 15px 'Manrope'" }}
+            />
+            <button type="button" onClick={() => setShowPass(!showPass)} style={{ background: "none", border: "none", cursor: "pointer", padding: 2, display: "flex" }}>
+              {showPass ? <EyeOff size={16} color="#7c766a" /> : <Eye size={16} color="#7c766a" />}
+            </button>
+          </label>
+
           {error && (
-            <div className="rounded-xl px-4 py-3 text-center" style={{ background: "#cc000020", border: "1px solid #cc000040" }}>
-              <p className="text-red-400 text-xs">{error}</p>
+            <div style={{ borderRadius: 11, padding: "11px 14px", textAlign: "center", background: "rgba(192,57,43,.12)", border: "1px solid rgba(192,57,43,.3)" }}>
+              <p style={{ color: "#e07a6f", fontSize: 12, margin: 0 }}>{error}</p>
             </div>
           )}
+
+          {/* Login button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 font-bold text-black rounded-2xl text-sm uppercase tracking-[0.3em] disabled:opacity-60"
+            className="kkBtn"
             style={{
-              background: "linear-gradient(135deg, #C9A84C 0%, #f5e070 35%, #D4AF37 65%, #B8960C 100%)",
-              boxShadow: "0 6px 28px #D4AF3760, 0 2px 8px #00000060",
+              position: "relative",
+              marginTop: 12,
+              height: 56,
+              border: "none",
+              borderRadius: 13,
+              cursor: loading ? "default" : "pointer",
+              fontFamily: "'Manrope', sans-serif",
+              fontWeight: 800,
+              fontSize: 16,
+              letterSpacing: 3,
+              color: "#2a1d05",
+              background: GOLD_GRAD,
+              boxShadow: "0 14px 30px -10px rgba(200,144,43,.55), inset 0 1px 0 rgba(255,255,255,.5)",
+              opacity: loading ? 0.7 : 1,
+              overflow: "hidden",
             }}
           >
-            {loading ? "Memuat..." : "LOGIN"}
+            {loading ? "MEMUAT..." : "LOGIN"}
           </button>
         </form>
 
-        <div className="rounded-xl px-4 py-3" style={{ background: "#ffffff08", border: "1px solid #ffffff10" }}>
-          <p className="text-gray-700 text-xs mb-2 tracking-wider text-center">Akun Login:</p>
-          <div className="flex flex-col gap-1">
-            {[
-              ["Admin",     "admin@kuykuy.com",    "admin123"],
-              ["Therapist", "staff@kuykuy.com",    "kuykuy123"],
-              ["Kasir",     "kasir@kuykuy.com",    "kuykuy123"],
-              ["Sub Kasir", "subkasir@kuykuy.com", "kuykuy123"],
-              ["GRO",       "gro@kuykuy.com",      "kuykuy123"],
-              ["Office Boy","ob@kuykuy.com",        "kuykuy123"],
-            ].map(([role, email, pass]) => (
-              <div key={role} className="flex justify-between items-center py-0.5">
-                <span style={{ color: "#D4AF3780", fontSize: 10, minWidth: 70 }}>{role}</span>
-                <span className="text-gray-600 text-[10px] flex-1 text-center">{email}</span>
-                <span className="text-gray-700 text-[10px]">/ {pass}</span>
-              </div>
-            ))}
+        {/* Lupa password / demo accounts toggle */}
+        <button
+          type="button"
+          onClick={() => setShowAccounts(s => !s)}
+          style={{ position: "relative", margin: "18px auto 0", fontSize: 12.5, color: "#7c766a", background: "none", border: "none", cursor: "pointer" }}
+        >
+          {showAccounts ? "Sembunyikan akun demo" : "Lupa password?"}
+        </button>
+
+        {showAccounts && (
+          <div style={{ position: "relative", marginTop: 14, borderRadius: 13, padding: "14px 16px", background: FIELD_BG, border: FIELD_BORDER }}>
+            <p style={{ fontSize: 10, letterSpacing: ".15em", color: GOLD, textAlign: "center", margin: "0 0 10px", textTransform: "uppercase" }}>Akun Demo</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {[
+                ["Admin", "admin@kuykuy.com", "admin123"],
+                ["Therapist", "staff@kuykuy.com", "kuykuy123"],
+                ["Kasir", "kasir@kuykuy.com", "kuykuy123"],
+                ["Sub Kasir", "subkasir@kuykuy.com", "kuykuy123"],
+                ["GRO", "gro@kuykuy.com", "kuykuy123"],
+                ["Office Boy", "ob@kuykuy.com", "kuykuy123"],
+              ].map(([role, em, pw]) => (
+                <button
+                  key={role}
+                  type="button"
+                  onClick={() => { setEmail(em); setPassword(pw); }}
+                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, background: "rgba(202,162,61,.05)", border: "1px solid rgba(202,162,61,.1)", borderRadius: 8, padding: "6px 10px", cursor: "pointer" }}
+                >
+                  <span style={{ color: GOLD, fontSize: 10, minWidth: 64, textAlign: "left" }}>{role}</span>
+                  <span style={{ color: "#8a8475", fontSize: 10, flex: 1, textAlign: "center" }}>{em}</span>
+                  <span style={{ color: "#5a5448", fontSize: 10 }}>{pw}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* BOTTOM NAV decorative */}
-      <div
-        className="flex justify-around items-center py-4 px-4"
-        style={{ borderTop: "1.5px solid #D4AF3728", background: "linear-gradient(180deg, #0a0a0a, #050500)" }}
-      >
-        {[
-          { icon: LayoutGrid, label: "Dashboard" },
-          { icon: ClipboardList, label: "Absensi" },
-          { icon: BarChart2, label: "Kinerja" },
-          { icon: User, label: "Profile" },
-        ].map(({ icon: Icon, label }) => (
-          <div key={label} className="flex flex-col items-center gap-1">
-            <Icon size={20} color="#333" strokeWidth={1.8} />
-            <span className="text-[10px] tracking-wider" style={{ color: "#333" }}>{label}</span>
-          </div>
-        ))}
-      </div>
+      <style>{`
+        .kkBtn::after {
+          content: "";
+          position: absolute;
+          inset: 0 auto 0 0;
+          width: 40%;
+          background: linear-gradient(100deg, transparent, rgba(255,255,255,.5), transparent);
+          animation: kkShine 4s ease-in-out infinite;
+        }
+        @keyframes kkShine {
+          0% { transform: translateX(-130%); }
+          100% { transform: translateX(240%); }
+        }
+      `}</style>
     </div>
   );
 }
