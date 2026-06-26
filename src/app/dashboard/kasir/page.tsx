@@ -4,16 +4,16 @@ import Link from "next/link";
 import { ShoppingCart, User, Phone, UserCog, DoorOpen, CreditCard, Banknote, QrCode, CheckCircle2, Trash2, Plus, Clock, ExternalLink, ChevronDown, Search, Printer, RotateCcw, Tag, Calendar, Star, Users, LayoutDashboard } from "lucide-react";
 
 const OUTLETS = [
-  "KuyKuy Kemang",
-  "KuyKuy Senopati",
-  "KuyKuy BSD City",
-  "KuyKuy Kelapa Gading",
-  "KuyKuy Pondok Indah",
-  "KuyKuy Fatmawati",
-  "KuyKuy Tebet",
-  "KuyKuy Grogol",
-  "KuyKuy Bekasi",
-  "KuyKuy Tangerang",
+  "V Phoenix",
+  "Sierra",
+  "Vierzhen",
+  "Crystal",
+  "Miracle",
+  "Kuy Cibi",
+  "Xi Kuy",
+  "Kyu Betos",
+  "Infinity",
+  "B Kuy",
 ];
 
 const TREATMENTS = [
@@ -366,8 +366,8 @@ export default function KasirPage() {
         {/* === CENTER: Treatment Catalog === */}
         <div style={{ flex: 1, padding: "20px 20px", display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
           {/* Search + Category filter */}
-          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-            <div style={{ position: "relative", flex: 1 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ position: "relative", width: "100%" }}>
               <Search size={14} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#776d54" }} />
               <input
                 style={{ ...inputStyle, paddingLeft: 34 }}
@@ -376,7 +376,7 @@ export default function KasirPage() {
                 onChange={e => setSearch(e.target.value)}
               />
             </div>
-            <div style={{ display: "flex", gap: 6 }}>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
               {CATEGORIES.map(cat => (
                 <button key={cat} onClick={() => setCategory(cat)}
                   style={{ padding: "8px 14px", borderRadius: 9, fontSize: 12, fontWeight: 600, cursor: "pointer", border: cat === category ? "none" : "1px solid rgba(212,175,55,.16)", background: cat === category ? GOLD_GRAD : "rgba(212,175,55,.06)", color: cat === category ? "#1a1305" : "#9a8f70", whiteSpace: "nowrap" }}
@@ -675,6 +675,7 @@ export default function KasirPage() {
             {/* Action buttons */}
             <div style={{ display: "flex", gap: 10 }}>
               <button
+                onClick={() => window.print()}
                 style={{ flex: 1, padding: "12px", borderRadius: 12, fontSize: 12, cursor: "pointer", background: "rgba(212,175,55,.06)", border: "1px solid rgba(212,175,55,.16)", color: "#9a8f70", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 7 }}
               >
                 <Printer size={14} />
