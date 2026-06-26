@@ -8,6 +8,7 @@ import {
 import {
   Mail, Bell, ChevronDown, CalendarDays, Coins, Users, Star,
   UserPlus, Megaphone, Plus, CalendarPlus, Download, RefreshCw,
+  MapPin, ExternalLink, Navigation,
 } from "lucide-react";
 
 /* ---------- design tokens ---------- */
@@ -52,18 +53,27 @@ const reservations = [
   { id: "#KK10046", name: "Maya Sari", layanan: "Tradisional", waktu: "17.00–18.00", status: "Selesai" },
 ];
 
-const outlets = [
-  { no: 1, name: "V PHOENIX", staf: 5, left: "15%", top: "30%" },
-  { no: 2, name: "SIERRA", staf: 3, left: "29%", top: "20%" },
-  { no: 3, name: "VIERZHEN", staf: 4, left: "41%", top: "43%" },
-  { no: 4, name: "CRYSTAL", staf: 2, left: "22%", top: "60%" },
-  { no: 5, name: "MIRACLE", staf: 3, left: "54%", top: "24%" },
-  { no: 6, name: "KUY CIBI", staf: 2, left: "48%", top: "62%" },
-  { no: 7, name: "XI KUY", staf: 3, left: "64%", top: "36%" },
-  { no: 8, name: "KYU BETOS", staf: 2, left: "73%", top: "63%" },
-  { no: 9, name: "INFINITY", staf: 2, left: "82%", top: "28%" },
-  { no: 10, name: "B KUY", staf: 2, left: "88%", top: "54%" },
+// Data cabang asli (sinkron dengan halaman /cabang) — dipakai untuk Live GPS Google Maps
+type Outlet = { no: number; name: string; staf: number; address: string; mapUrl: string };
+const outlets: Outlet[] = [
+  { no: 1, name: "KUY BM", staf: 5, address: "Ruko Bekasi Mas, Jl. Ahmad Yani No.24 Blok B, Marga Jaya, Kec. Bekasi Selatan, Kota Bekasi, Jawa Barat 17141", mapUrl: "https://maps.app.goo.gl/CCp2fQaASvTcHAxN6" },
+  { no: 2, name: "KUY BETOS", staf: 3, address: "Jl. Cut Mutia No.23 Blok G, Margahayu, Kec. Bekasi Timur, Kota Bekasi, Jawa Barat 17113", mapUrl: "https://maps.app.goo.gl/vWqKNtksLgPRdye16" },
+  { no: 3, name: "CRYSTAL KUY", staf: 4, address: "Ruko Sentral Niaga Kalimalang Blok B1 No.16, Jl. Sentra Niaga Kalimalang No.15, Kayuringin Jaya, Kec. Bekasi Sel., Kota Bekasi, Jawa Barat 17144", mapUrl: "https://maps.app.goo.gl/6qdwQh1TUGrAR78b6" },
+  { no: 4, name: "KUY STORY", staf: 2, address: "Ruko Commpark Kota Wisata Blok H No.29, Limus Nunggal, Kec. Cileungsi, Kabupaten Bogor, Jawa Barat 16820", mapUrl: "https://maps.app.goo.gl/XdBAseGr5XdJ2SUt8" },
+  { no: 5, name: "XI-KUY", staf: 3, address: "Jalan Niaga Raya Jababeka 2 Ruko CBD, Blok D No.16-17, Pasirsari, Kec. Cikarang Selatan, Kabupaten Bekasi, Jawa Barat 17530", mapUrl: "https://maps.app.goo.gl/Zc4gi6dG19EUaR2J8" },
+  { no: 6, name: "Strawberry Spa & Therapy", staf: 2, address: "Ruko Kawasan Niaga Citra Grand Cibubur, Jl. Alternatif Cibubur No.26, Jatisampurna, Kec. Jatisampurna, Kota Bekasi, Jawa Barat 17435", mapUrl: "https://maps.app.goo.gl/5MpCHHkRdqGFbSpT7" },
+  { no: 7, name: "V PHOENIX", staf: 3, address: "Plaza Amsterdam, Jl. MH. Thamrin No.57 Blok A.21, Citaringgul, Kec. Babakan Madang, Kabupaten Bogor, Jawa Barat 16710", mapUrl: "https://maps.app.goo.gl/4z7PPgg5myAM4TCE7" },
+  { no: 8, name: "SIERRA", staf: 2, address: "Ruko Podium, Jl. Mataram Blok B.1 & B.2, Cibatu, Cikarang Selatan, Kabupaten Bekasi, Jawa Barat 17530", mapUrl: "https://maps.app.goo.gl/m6dRvP9BxcfGB1pT7" },
+  { no: 9, name: "VIERZHEN", staf: 2, address: "Jl. Niaga Raya Ruko CBD Jababeka Kav AA3 Blok A88, Pasirsari, Kec. Cikarang Selatan, Kabupaten Bekasi, Jawa Barat 17530", mapUrl: "https://maps.app.goo.gl/Dw31k7BnjPSJ8Xuw8" },
+  { no: 10, name: "MIRACLE KUY", staf: 2, address: "Ruko Cibinong Center, Blok E No.7, Pakansari, Kec. Cibinong, Kabupaten Bogor, Jawa Barat 16915", mapUrl: "https://maps.app.goo.gl/TfF55aGh7N4TPEXC6" },
+  { no: 11, name: "INFINITY", staf: 2, address: "Ruko Plaza Amsterdam City, Blok C8, Sentul, Kec. Babakan Madang, Kabupaten Bogor, Jawa Barat 16810", mapUrl: "https://maps.app.goo.gl/fYaPmGRKddJkLjbg8" },
 ];
+
+// Peta tertanam Google Maps via query alamat (tanpa perlu API key)
+function mapEmbedSrc(o: Outlet) {
+  const q = encodeURIComponent(`Kuykuy ${o.name}, ${o.address}`);
+  return `https://www.google.com/maps?q=${q}&z=15&output=embed`;
+}
 
 const quickActions = [
   { label: "Undang Staf Baru", icon: UserPlus },
@@ -109,6 +119,7 @@ export default function AdminDashboard() {
   const [user, setUser] = useState<{ name?: string } | null>(null);
   const [attendance, setAttendance] = useState<Attendance[]>([]);
   const [lastRefresh, setLastRefresh] = useState("");
+  const [activeOutlet, setActiveOutlet] = useState<Outlet>(outlets[0]);
 
   const fetchAttendance = async () => {
     const today = new Date().toISOString().split("T")[0];
@@ -359,61 +370,58 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* ===== MAP ===== */}
+        {/* ===== MAP (Live GPS — Google Maps asli) ===== */}
         <div style={{ position: "relative", background: PANEL_BG, border: CARD_BORDER, borderRadius: 16, boxShadow: "0 14px 34px rgba(0,0,0,.5)", overflow: "hidden" }}>
           <div className="flex justify-between items-center" style={{ padding: "16px 20px 14px", borderBottom: "1px solid rgba(212,175,55,.14)", background: "linear-gradient(90deg,rgba(212,175,55,.06),transparent)" }}>
-            <h3 style={{ fontFamily: cinzel, fontSize: 14, fontWeight: 600, letterSpacing: "1px", color: "#e8d49a", textTransform: "uppercase" }}>Jaringan 10 Cabang — Live GPS</h3>
-            <span className="flex items-center" style={{ gap: 6, fontSize: 11, color: "#5fae7d" }}><span style={{ width: 7, height: 7, borderRadius: "50%", background: "#5fae7d", boxShadow: "0 0 8px #5fae7d" }} className="animate-pulse" />Live GPS</span>
+            <h3 style={{ fontFamily: cinzel, fontSize: 14, fontWeight: 600, letterSpacing: "1px", color: "#e8d49a", textTransform: "uppercase" }}>Jaringan {outlets.length} Cabang — Live GPS</h3>
+            <span className="flex items-center" style={{ gap: 6, fontSize: 11, color: "#5fae7d" }}><span style={{ width: 7, height: 7, borderRadius: "50%", background: "#5fae7d", boxShadow: "0 0 8px #5fae7d" }} className="animate-pulse" />Live GPS · Google Maps</span>
           </div>
           <div className="flex items-stretch flex-wrap">
-            {/* map area */}
-            <div style={{ position: "relative", flex: 1, minWidth: 420, height: 440, background: "linear-gradient(160deg,#16202c 0%,#0e161f 100%)" }}>
-              <svg viewBox="0 0 1120 360" preserveAspectRatio="xMidYMid slice" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
-                <rect width="1120" height="360" fill="#101a24" />
-                <g stroke="rgba(255,255,255,.035)" strokeWidth="1" fill="none">
-                  <path d="M0 80 H1120 M0 160 H1120 M0 240 H1120 M0 320 H1120" />
-                  <path d="M120 0 V360 M280 0 V360 M440 0 V360 M600 0 V360 M760 0 V360 M920 0 V360" />
-                </g>
-                <path d="M0 300 Q180 280 360 310 T720 300 T1120 320 V360 H0 Z" fill="rgba(40,70,96,.4)" />
-                <g fill="none" strokeLinecap="round">
-                  <path d="M-20 140 Q300 100 560 180 T1140 150" stroke="rgba(212,175,55,.22)" strokeWidth="5" />
-                  <path d="M160 -20 Q220 160 380 360" stroke="rgba(212,175,55,.16)" strokeWidth="4" />
-                  <path d="M700 -20 Q760 180 900 380" stroke="rgba(212,175,55,.16)" strokeWidth="4" />
-                  <path d="M-20 250 Q400 230 760 260 T1140 240" stroke="rgba(255,255,255,.06)" strokeWidth="3" />
-                </g>
-              </svg>
-              {outlets.map((o) => (
-                <div key={o.no} style={{ position: "absolute", left: o.left, top: o.top, transform: "translate(-50%,-100%)", zIndex: 2 }} className="flex flex-col items-center">
-                  <div style={{ width: 34, height: 34, borderRadius: "50% 50% 50% 0", transform: "rotate(-45deg)", background: GOLD_GRAD, border: "2px solid #fff3d6", boxShadow: "0 6px 16px rgba(0,0,0,.55)" }} className="flex items-center justify-center">
-                    <span style={{ transform: "rotate(45deg)", color: "#1a1305", fontWeight: 800, fontSize: 13 }}>{o.no}</span>
-                  </div>
-                  <div style={{ marginTop: 5, fontSize: 9, fontWeight: 700, letterSpacing: ".3px", color: "#f3ecda", background: "rgba(10,8,4,.8)", border: "1px solid rgba(212,175,55,.3)", padding: "2px 6px", borderRadius: 6, whiteSpace: "nowrap" }}>{o.name}</div>
+            {/* map area — peta Google Maps asli untuk cabang terpilih */}
+            <div style={{ position: "relative", flex: 1, minWidth: 420, height: 440, background: "#0a0906" }}>
+              <iframe
+                key={activeOutlet.no}
+                title={`Peta ${activeOutlet.name}`}
+                src={mapEmbedSrc(activeOutlet)}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+                style={{ border: 0, width: "100%", height: "100%", filter: "grayscale(0.25) contrast(1.05) brightness(0.92)" }}
+              />
+              {/* overlay info cabang aktif */}
+              <div style={{ position: "absolute", top: 16, left: 16, maxWidth: 320, borderRadius: 12, border: "1px solid rgba(212,175,55,.3)", background: "rgba(10,8,4,.82)", backdropFilter: "blur(6px)", padding: "12px 14px", boxShadow: "0 8px 22px rgba(0,0,0,.5)" }}>
+                <div className="flex items-center" style={{ gap: 8, marginBottom: 6 }}>
+                  <MapPin size={14} color={GOLD} />
+                  <span style={{ fontSize: 13, fontWeight: 800, color: "#f3ecda", letterSpacing: ".3px" }}>{activeOutlet.name}</span>
                 </div>
-              ))}
-              <div style={{ position: "absolute", top: 16, right: 16, borderRadius: 10, overflow: "hidden", border: "1px solid rgba(212,175,55,.25)", background: "rgba(10,8,4,.7)", backdropFilter: "blur(4px)" }} className="flex flex-col">
-                <div style={{ width: 34, height: 34, color: "#e8c874", fontSize: 18, borderBottom: "1px solid rgba(212,175,55,.2)", cursor: "pointer" }} className="flex items-center justify-center">+</div>
-                <div style={{ width: 34, height: 34, color: "#e8c874", fontSize: 18, cursor: "pointer" }} className="flex items-center justify-center">−</div>
+                <div style={{ fontSize: 11, color: "#b3a884", lineHeight: 1.5, marginBottom: 10 }}>{activeOutlet.address}</div>
+                <a href={activeOutlet.mapUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center" style={{ gap: 7, padding: "8px 0", background: GOLD_GRAD, borderRadius: 8, color: "#1a1305", fontSize: 12, fontWeight: 800, textDecoration: "none" }}>
+                  <Navigation size={13} /> Buka Rute di Google Maps <ExternalLink size={12} />
+                </a>
               </div>
-              <div style={{ position: "absolute", bottom: 8, left: 14, fontSize: 10, color: "rgba(255,255,255,.3)" }}>KuyKuy Maps · Live Tracking</div>
+              <div style={{ position: "absolute", bottom: 8, left: 14, fontSize: 10, color: "rgba(255,255,255,.4)" }}>KuyKuy Maps · Live Tracking</div>
             </div>
 
-            {/* directory */}
+            {/* directory — klik untuk memuat data realtime cabang */}
             <aside style={{ width: 300, flex: "0 0 300px", height: 440, borderLeft: "1px solid rgba(212,175,55,.14)", background: "linear-gradient(180deg,#13100a,#0c0905)" }} className="flex flex-col">
               <div className="flex justify-between items-center" style={{ padding: "15px 18px 12px", borderBottom: "1px solid rgba(212,175,55,.12)" }}>
                 <span style={{ fontFamily: cinzel, fontSize: 13, fontWeight: 600, letterSpacing: ".6px", color: "#e8d49a" }}>Direktori Cabang</span>
-                <span style={{ fontSize: 10, fontWeight: 700, color: "#1a1305", background: "linear-gradient(135deg,#f4d886,#d4af37)", padding: "3px 9px", borderRadius: 20 }}>10 Outlet</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#1a1305", background: "linear-gradient(135deg,#f4d886,#d4af37)", padding: "3px 9px", borderRadius: 20 }}>{outlets.length} Outlet</span>
               </div>
               <div className="flex flex-col flex-1 overflow-y-auto" style={{ padding: "10px 12px", gap: 7 }}>
-                {outlets.map((o) => (
-                  <div key={o.no} className="flex items-center" style={{ gap: 11, padding: "8px 10px", borderRadius: 10, background: "rgba(255,255,255,.022)", border: "1px solid rgba(212,175,55,.1)" }}>
-                    <span style={{ width: 26, height: 26, flex: "0 0 26px", borderRadius: 8, background: "linear-gradient(135deg,#f4d886,#c79a2e)", color: "#1a1305", fontWeight: 800, fontSize: 12 }} className="flex items-center justify-center">{o.no}</span>
-                    <div className="flex-1 min-w-0">
-                      <div style={{ fontSize: 12.5, fontWeight: 700, color: "#f3ecda", letterSpacing: ".3px" }}>{o.name}</div>
-                      <div style={{ fontSize: 10, color: "#8a8166" }}>{o.staf} terapis aktif</div>
-                    </div>
-                    <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#5fae7d", boxShadow: "0 0 7px #5fae7d" }} />
-                  </div>
-                ))}
+                {outlets.map((o) => {
+                  const active = o.no === activeOutlet.no;
+                  return (
+                    <button key={o.no} onClick={() => setActiveOutlet(o)} className="flex items-center text-left transition-all" style={{ gap: 11, padding: "8px 10px", borderRadius: 10, cursor: "pointer", background: active ? "rgba(212,175,55,.14)" : "rgba(255,255,255,.022)", border: active ? "1px solid rgba(212,175,55,.45)" : "1px solid rgba(212,175,55,.1)", boxShadow: active ? "0 0 16px rgba(212,175,55,.18)" : "none" }}>
+                      <span style={{ width: 26, height: 26, flex: "0 0 26px", borderRadius: 8, background: "linear-gradient(135deg,#f4d886,#c79a2e)", color: "#1a1305", fontWeight: 800, fontSize: 12 }} className="flex items-center justify-center">{o.no}</span>
+                      <div className="flex-1 min-w-0">
+                        <div style={{ fontSize: 12.5, fontWeight: 700, color: active ? "#f9ecbf" : "#f3ecda", letterSpacing: ".3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.name}</div>
+                        <div style={{ fontSize: 10, color: "#8a8166" }}>{o.staf} terapis aktif</div>
+                      </div>
+                      <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#5fae7d", boxShadow: "0 0 7px #5fae7d" }} />
+                    </button>
+                  );
+                })}
               </div>
               <div className="flex justify-between" style={{ padding: "12px 18px", borderTop: "1px solid rgba(212,175,55,.14)", fontSize: 11, color: "#9a8f70" }}>
                 <span>Total Terapis Aktif</span><b style={{ color: "#f3ecda" }}>{hadir || 28}</b>
