@@ -1,14 +1,16 @@
 "use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "./Logo";
-import { logout } from "@/lib/auth";
+import { logout, getUser } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { LayoutDashboard, UserCog, Layers, CalendarClock, Target, MapPin, FileText, Settings, LogOut, Search, ShoppingCart, DoorOpen, AlarmClock, Wallet } from "lucide-react";
 
 type NavItem = | { type: "link"; label: string; icon: React.ElementType; href: string } | { type: "divider"; label: string };
 
-const navItems: NavItem[] = [
+// Menu lengkap untuk Admin
+const adminNavItems: NavItem[] = [
   { type: "link", label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { type: "divider", label: "OPERASIONAL" },
   { type: "link", label: "Kasir POS", icon: ShoppingCart, href: "/dashboard/kasir" },
@@ -24,11 +26,33 @@ const navItems: NavItem[] = [
   { type: "link", label: "Pengaturan", icon: Settings, href: "/dashboard/pengaturan" },
 ];
 
+// Menu terbatas untuk Kasir / Sub Kasir
+const kasirNavItems: NavItem[] = [
+  { type: "divider", label: "OPERASIONAL KASIR" },
+  { type: "link", label: "Kasir POS", icon: ShoppingCart, href: "/dashboard/kasir" },
+  { type: "link", label: "Monitor Kamar", icon: DoorOpen, href: "/dashboard/kamar" },
+  { type: "link", label: "Shift Kasir", icon: AlarmClock, href: "/dashboard/shift" },
+];
+
+const KASIR_ROLES = ["Kasir", "Sub Kasir"];
+
 const GOLD_GRAD = "linear-gradient(135deg,#f4d886,#d4af37 55%,#b8860b)";
 
 export default function AdminSidebar() {
   const path = usePathname();
   const router = useRouter();
+  const [profile, setProfile] = useState<{ name: string; jobRole: string } | null>(null);
+
+  useEffect(() => {
+    const u = getUser();
+    if (u) setProfile({ name: u.name, jobRole: u.jobRole });
+  }, []);
+
+  const isKasir = profile ? KASIR_ROLES.includes(profile.jobRole) : false;
+  const navItems = isKasir ? kasirNavItems : adminNavItems;
+  const displayName = profile?.name || "Admin KuyKuy";
+  const displayRole = isKasir ? profile!.jobRole : "Super Admin";
+
   return (
     <aside
       className="flex flex-col relative"
@@ -91,8 +115,8 @@ export default function AdminSidebar() {
           <Logo size={34} />
         </div>
         <div className="flex-1 min-w-0">
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#f3ecda" }}>Admin KuyKuy</div>
-          <div style={{ fontSize: 10.5, color: "#c79a2e", letterSpacing: ".5px" }}>Super Admin</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#f3ecda", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{displayName}</div>
+          <div style={{ fontSize: 10.5, color: "#c79a2e", letterSpacing: ".5px" }}>{displayRole}</div>
         </div>
         <button onClick={() => { logout(); router.push("/login"); }} title="Logout" style={{ color: "#776d54", display: "flex", padding: 4 }} className="hover:text-red-400 transition-colors">
           <LogOut size={16} />

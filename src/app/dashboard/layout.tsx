@@ -5,6 +5,8 @@ import { getUser } from "@/lib/auth";
 import AdminSidebar from "@/components/AdminSidebar";
 
 const KASIR_ROLES = ["Kasir", "Sub Kasir"];
+// Halaman yang boleh diakses Kasir / Sub Kasir
+const KASIR_ALLOWED = ["/dashboard/kasir", "/dashboard/kamar", "/dashboard/shift"];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -14,10 +16,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (!user) { router.push("/login"); return; }
     // Admin punya akses penuh ke seluruh dashboard.
     if (user.role === "admin") return;
-    // Kasir / Sub Kasir hanya boleh mengakses halaman Kasir POS.
-    if (KASIR_ROLES.includes(user.jobRole) && pathname.startsWith("/dashboard/kasir")) return;
-    // Selain itu arahkan: kasir -> halaman kasir, lainnya -> login.
-    router.push(KASIR_ROLES.includes(user.jobRole) ? "/dashboard/kasir" : "/login");
+    // Kasir / Sub Kasir hanya boleh mengakses halaman operasional kasir.
+    if (KASIR_ROLES.includes(user.jobRole)) {
+      if (KASIR_ALLOWED.some(p => pathname.startsWith(p))) return;
+      router.push("/dashboard/kasir");
+      return;
+    }
+    // Peran lain tidak boleh masuk dashboard admin.
+    router.push("/login");
   }, [router, pathname]);
 
   return (
